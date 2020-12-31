@@ -10,3 +10,6 @@
     > Song : vanilla missile - esuriit<br>
     > Follow Artist : https://bit.ly/37WRISz<br>
     > Music promoted by DayDreamSound : https://youtu.be/unw220HUWsg
+
+## 201231
+- ThirdPage에 L, R 별로 DB 데이터 저장 및 출력 페이지 구성.
