@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
 class SecondLeftPage extends StatefulWidget {
-  final int index;
-
-  SecondLeftPage(this.index);
-
   @override
   SecondLeftPageState createState() => new SecondLeftPageState();
 }

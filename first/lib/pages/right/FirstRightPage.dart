@@ -9,10 +9,6 @@ class FirstRightPage extends StatelessWidget {
   AudioPlayer player = new AudioPlayer();
   AudioCache cache = new AudioCache();
 
-  final int index;
-
-  FirstRightPage(this.index);
-
   @override
   Widget build(BuildContext context) {
     return Center(

@@ -84,9 +84,9 @@ Widget _leftPage(int i) {
   Widget res;
 
   switch(i) {
-    case 0: res = FirstLeftPage(i);  break;
-    case 1: res = SecondLeftPage(i); break;
-    case 2: res = ThirdLeftPage(i);  break;
+    case 0: res = FirstLeftPage();  break;
+    case 1: res = SecondLeftPage(); break;
+    case 2: res = ThirdLeftPage();  break;
   }
 
   return res;
@@ -96,9 +96,9 @@ Widget _rightPage(int i) {
   Widget res;
 
   switch(i) {
-    case 0: res = FirstRightPage(i);  break;
-    case 1: res = SecondRightPage(i); break;
-    case 2: res = ThirdRightPage(i);  break;
+    case 0: res = FirstRightPage();  break;
+    case 1: res = SecondRightPage(); break;
+    case 2: res = ThirdRightPage();  break;
   }
 
   return res;
