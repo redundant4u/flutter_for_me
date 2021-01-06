@@ -1,61 +1,102 @@
 import 'package:flutter/material.dart';
-import 'package:volume_control/volume_control.dart';
-import 'dart:async';
+import 'package:flutter_xlider/flutter_xlider.dart';
+
 
 class SecondLeftPage extends StatefulWidget {
   @override
   SecondLeftPageState createState() => new SecondLeftPageState();
 }
 
-class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveClientMixin<SecondLeftPage> {
-  @override
-  bool get wantKeepAlive => true;
-
-  int _count = 0;
-  double _vol;
-
-  void _increment() { setState(() { _count++; }); }
-  void initState() {
-    super.initState();
-    initVolumeState();
-  }
-
-  Future<void> initVolumeState() async {
-    if(!mounted) return;
-
-    _vol = await VolumeControl.volume;
-    print('current volume is $_vol');
-    setState(() {});
-  }
-
-  @override
+class SecondLeftPageState extends State<SecondLeftPage> {
   Widget build(BuildContext context) {
-    super.build(context);
-
-    return Scaffold(
-      body: Row(
-        children: [
-          Center(
-            child: Text('Left $_count'),
+    return Row(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              Container(
+                height: 400,
+                child: FlutterSlider(
+                  axis: Axis.vertical,
+                  rtl: true,
+                  values: [300],
+                  max: 500,
+                  min: 0,
+                  selectByTap: false,
+                ),
+              ),
+              Text('125')
+            ],
           ),
-          MaterialButton(
-            child: Text('Set Volume'),
-            onPressed: () {
-              _vol = 0.5;
-              setState(() {
-                VolumeControl.setVolume(_vol);
-              });
 
-              print('current volume is $_vol');
-            },
-          )
+          Column(
+            children: <Widget>[
+              Container(
+                height: 400,
+                child: FlutterSlider(
+                  axis: Axis.vertical,
+                  rtl: true,
+                  values: [300],
+                  max: 500,
+                  min: 0,
+                  selectByTap: false,
+                ),
+              ),
+              Text('250')
+            ],
+          ),
+
+          Column(
+            children: <Widget>[
+              Container(
+                height: 400,
+                child: FlutterSlider(
+                  axis: Axis.vertical,
+                  rtl: true,
+                  values: [300],
+                  max: 500,
+                  min: 0,
+                  selectByTap: false,
+                ),
+              ),
+              Text('500')
+            ],
+          ),
+
+          Column(
+            children: <Widget>[
+              Container(
+                height: 400,
+                child: FlutterSlider(
+                  axis: Axis.vertical,
+                  rtl: true,
+                  values: [300],
+                  max: 500,
+                  min: 0,
+                  selectByTap: false,
+                ),
+              ),
+              Text('1K')
+            ],
+          ),
+
+          Column(
+            children: <Widget>[
+              Container(
+                height: 400,
+                child: FlutterSlider(
+                  axis: Axis.vertical,
+                  rtl: true,
+                  values: [300],
+                  max: 500,
+                  min: 0,
+                  selectByTap: false,
+                ),
+              ),
+              Text('2K')
+            ],
+          ),
         ],
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: _increment,
-        child: Icon(Icons.add),
-      ),
-    );
+      );
+    // );
   }
 }

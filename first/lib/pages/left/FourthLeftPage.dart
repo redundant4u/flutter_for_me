@@ -1,128 +1,79 @@
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:charts_flutter/src/text_element.dart' as chartText;
-import 'package:charts_flutter/src/text_style.dart' as chartStyle;
 
-import 'dart:math';
+import '../../db/db.dart';
+import '../../models/Left.dart';
 
-class FourthLeftPage extends StatelessWidget {
-  final List<charts.Series<LinearSales, int>> seriesList = _createSampleData();
-  final bool animate = false;
-
-  Widget build(BuildContext context) {
-    return new charts.LineChart(
-      seriesList,
-      animate: animate,
-      defaultRenderer: new charts.LineRendererConfig(includePoints: false),
-      flipVerticalAxis: true,
-      domainAxis: charts.NumericAxisSpec(
-        tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredTickCount: 9),
-        tickFormatterSpec: dBTickFormatter,
-      ),
-      primaryMeasureAxis: charts.NumericAxisSpec(
-        tickProviderSpec: charts.BasicNumericTickProviderSpec(desiredTickCount: 10),
-      ),
-      behaviors: [
-        charts.LinePointHighlighter(symbolRenderer: CustomCircleSymbolRenderer()),
-        charts.ChartTitle(
-          'dB',
-          behaviorPosition: charts.BehaviorPosition.start,
-          titleOutsideJustification: charts.OutsideJustification.middleDrawArea
-        ),
-        charts.ChartTitle(
-          'Hz',
-          behaviorPosition: charts.BehaviorPosition.bottom,
-          titleOutsideJustification: charts.OutsideJustification.middleDrawArea
-        ),
-      ],
-      selectionModels: [
-        charts.SelectionModelConfig(
-          changedListener: (charts.SelectionModel model) {
-            if(model.hasDatumSelection) {
-              final value = model.selectedSeries[0].measureFn(model.selectedDatum[0].index).toString();
-              CustomCircleSymbolRenderer.value = value;
-              print(value);
-            }
-          }
-        )
-      ],
-    );
-  }
-
-  static List<charts.Series<LinearSales, int>> _createSampleData() {
-    final data = [
-      new LinearSales(-20, -1),
-      new LinearSales(null, -1),
-      new LinearSales(50, 0),
-      new LinearSales(55, 1),
-      new LinearSales(60, 2),
-      new LinearSales(30, 3),
-      new LinearSales(40, 4),
-      new LinearSales(70, 5),
-      new LinearSales(65, 6),
-      new LinearSales(null, -1),
-      new LinearSales(160, 7),
-    ];
-
-    return [
-      new charts.Series(
-        id: 'Sales',
-        data: data,
-        domainFn: (LinearSales sales, _) => sales.hZ,
-        measureFn: (LinearSales sales, _) => sales.dB
-      )
-    ];
-  }
-
-  final dBTickFormatter = charts.BasicNumericTickFormatterSpec((num i) {
-    String res;
-
-    switch(i) {
-      case -1: res = ""; break;
-      case 0: res = "125"; break;
-      case 1: res = "250"; break;
-      case 2: res = "500"; break;
-      case 3: res = "1K"; break;
-      case 4: res = "2K"; break;
-      case 5: res = "4K"; break;
-      case 6: res = "8K"; break;
-      case 7: res = ""; break;
-      default: res = ""; break;
-    }
-
-    return res;
-  });
+class FourthLeftPage extends StatefulWidget {
+  @override
+  FourthLeftPageState createState() => new FourthLeftPageState();
 }
 
-class LinearSales {
-  final int dB;
-  final int hZ;
-
-  LinearSales(this.dB, this.hZ);
-}
-
-class CustomCircleSymbolRenderer extends charts.CircleSymbolRenderer {
-  static String value;
+class FourthLeftPageState extends State<FourthLeftPage> {
+  final TextEditingController _controller = new TextEditingController();
 
   @override
-  void paint(charts.ChartCanvas canvas, Rectangle<num> bounds,
-    {
-      List<int> dashPattern,
-      charts.Color fillColor,
-      charts.FillPatternType fillPattern,
-      charts.Color strokeColor,
-      double strokeWidthPx
-    }) {
-    super.paint(canvas, bounds, dashPattern: dashPattern, fillColor: fillColor, strokeColor: strokeColor, strokeWidthPx: strokeWidthPx);
-    canvas.drawRect(
-      Rectangle(bounds.left - 5, bounds.top - 30, bounds.width + 10, bounds.height + 10),
-      fill: charts.Color.fromHex(code: '#666666'),
-    );
-    var textStyle = chartStyle.TextStyle();
-    textStyle.color = charts.Color.white;
-    textStyle.fontSize = 15;
-    canvas.drawText(
-      chartText.TextElement("$value", style: textStyle), (bounds.left - 3).round(), (bounds.top - 28).round()
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration( hintText: '왼쪽 이름' ),
+                    onSubmitted: _insertLeftName,
+                  ),
+                ),
+              ),
+
+              Container(
+                child: IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () { _insertLeftName(_controller.text); }
+                )
+              )
+            ]
+          ),
+
+          Expanded(
+            child: SizedBox(
+              child: FutureBuilder<List<Left>>(
+                future: DB.instance.getLeftName(),
+                builder: (context, snapshot) {
+                  if( snapshot.hasData ) {
+                    return ListView.separated(
+                      padding: const EdgeInsets.all(10.0),
+                      separatorBuilder: (context, index) => Divider( color: Colors.black, ),
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text( snapshot.data[index].id.toString() ),
+                          subtitle: Text( snapshot.data[index].name ),
+                          trailing:
+                            IconButton(
+                              alignment: Alignment.center,
+                              icon: Icon(Icons.delete),
+                              onPressed: () async { _deleteLeftName(snapshot.data[index].id); }
+                            ),
+                        );
+                      },
+                    );
+                  }
+
+                  else if( snapshot.hasError ) return Text('Oops!');
+                  else return Center( child: CircularProgressIndicator() );
+                },
+              ),
+            ),
+          ),
+        ]
+      ),
     );
   }
+
+  _deleteLeftName(int id) { DB.instance.deleteLeftName(id); setState(() {}); }
+  _insertLeftName(String name) { DB.instance.insertLeftName(name); setState(() {}); }
 }
