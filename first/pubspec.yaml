@@ -13,9 +13,11 @@ dependencies:
     sdk: flutter
 
   # MIT
-  audioplayers: ^0.17.0
+  audioplayers: 0.17.0
   sqflite: ^1.3.0
   flutter_xlider: ^3.4.0
+  circular_countdown_timer: ^0.0.8
+  volume: ^1.0.1
 
   # Apache 2.0
   charts_flutter: ^0.9.0
@@ -35,3 +37,4 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/audio/

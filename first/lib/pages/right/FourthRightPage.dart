@@ -1,84 +1,128 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
-import '../../db/db.dart';
-import '../../models/Right.dart';
+class FourthPage extends StatefulWidget {
+  final FlutterBlue flutterBlue = FlutterBlue.instance;
+  final List<BluetoothDevice> deviceList = [];
 
-class FourthRightPage extends StatefulWidget {
   @override
-  FourthRightPageState createState() => new FourthRightPageState();
+  FourthPageState createState() => new FourthPageState();
 }
 
-class FourthRightPageState extends State<FourthRightPage> with AutomaticKeepAliveClientMixin<FourthRightPage> {
-  @override
-  bool get wantKeepAlive => true;
+class FourthPageState extends State<FourthPage> {
+  String _isScanning;
+  BluetoothDevice _connectedDevice;
+  List<BluetoothService> _services;
 
-  final TextEditingController _controller = new TextEditingController();
+  void initState() {
+    super.initState();
+    _isScanning = "";
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  _addDeviceToList(final BluetoothDevice device) {
+    if( !widget.deviceList.contains(device) )
+      setState(() { if(this.mounted) widget.deviceList.add(device); });
+  }
 
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Row(
+  ListView _buildView() {
+    List<Container> containers = [];
+    for( BluetoothDevice device in widget.deviceList ) {
+      containers.add(
+        Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration( hintText: '오른쪽 이름' ),
-                    onSubmitted: _insertRightName,
-                  ),
+              Column(
+                  children: <Widget>[
+                    Text(device.name == '' ? '(unknown device)' : device.name),
+                    Text(device.id.toString()),
+                  ],
                 ),
-              ),
 
-              Container(
-                child: IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () { _insertRightName(_controller.text); }
-                )
-              )
-            ]
-          ),
-
-          Expanded(
-            child: SizedBox(
-              child: FutureBuilder<List<Right>>(
-                future: DB.instance.getRightName(),
-                builder: (context, snapshot) {
-                  if( snapshot.hasData ) {
-                    return ListView.separated(
-                      padding: const EdgeInsets.all(10.0),
-                      separatorBuilder: (context, index) => Divider( color: Colors.black, ),
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: Text( snapshot.data[index].id.toString() ),
-                          subtitle: Text( snapshot.data[index].name ),
-                          trailing:
-                            IconButton(
-                              alignment: Alignment.center,
-                              icon: Icon(Icons.delete),
-                              onPressed: () async { _deleteRightName(snapshot.data[index].id); }
-                            ),
-                        );
-                      },
-                    );
+              FlatButton(
+                child: Text("Connect"),
+                color: Colors.grey,
+                onPressed: () async {
+                  setState(() { _isScanning = "Connecting..."; });
+                  try { await device.connect();  }
+                  catch(e) { print(e); }
+                  finally {
+                    _services = await device.discoverServices();
+                    setState(() { _connectedDevice = device; _isScanning = "${device.name} Connect"; });
                   }
-
-                  else if( snapshot.hasError ) return Text('Oops!');
-                  else return Center( child: CircularProgressIndicator() );
                 },
-              ),
+              )
+            ],
+          )
+        )
+      );
+    }
+
+    return ListView(
+      padding: EdgeInsets.all(10.0),
+      children: <Widget>[
+        Text(_isScanning),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            MaterialButton(
+              child: Text('Scan'),
+              color: Colors.grey,
+              onPressed: () { _isScanning = "Scanning..."; _startScan(); setState(() {}); }
             ),
-          ),
-        ]
-      ),
+
+            MaterialButton(
+              child: Text('Check'),
+              color: Colors.grey,
+              onPressed: () {
+                if( _connectedDevice != null ) _isScanning = "${_connectedDevice.name}";
+                else _isScanning = "";
+
+                setState(() {});
+              }
+            ),
+
+            MaterialButton(
+              child: Text('Stop'),
+              color: Colors.grey,
+              onPressed: () { _isScanning = "Stop Scanning"; _stopScan(); setState(() {}); }
+            ),
+          ],
+        ),
+
+        ...containers
+      ],
     );
   }
 
-  _deleteRightName(int id) { DB.instance.deleteRightName(id); setState(() {}); }
-  _insertRightName(String name) { DB.instance.insertRightName(name); setState(() {}); }
+  void _startScan() {
+    try {
+      widget.flutterBlue.startScan();
+      widget.flutterBlue.connectedDevices.asStream().listen((List<BluetoothDevice> devices) {
+        for( BluetoothDevice device in devices ) _addDeviceToList(device);
+      });
+      widget.flutterBlue.scanResults.listen((List<ScanResult> results) {
+        for( ScanResult result in results ) _addDeviceToList(result.device);
+      });
+    }
+
+    catch(e) { print(e); }
+  }
+
+  void _stopScan() {
+    if( _connectedDevice != null ) {
+      _connectedDevice.disconnect(); _connectedDevice = null;
+      _services.clear();
+    }
+
+    widget.deviceList.clear();
+    widget.flutterBlue.stopScan();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _buildView(),
+    );
+  }
 }

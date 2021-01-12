@@ -50,7 +50,7 @@ class _MainWidgetState extends State<MainWidget> {
             this._index = _index;
 
             switch(_index) {
-              case 0: _title = "노래듣기"; break;
+              case 0: _title = "검사"; break;
               case 1: _title = "Slider"; break;
               case 2: _title = "그래프 테스트"; break;
               case 3: _title = "DB 테스트"; break;
