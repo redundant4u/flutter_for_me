@@ -11,7 +11,7 @@ class FourthPage extends StatefulWidget {
 }
 
 class FourthPageState extends State<FourthPage> {
-  final TextEditingController _controller = new TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   Widget build(BuildContext context) {
     return Column(
@@ -24,7 +24,7 @@ class FourthPageState extends State<FourthPage> {
                 child: TextField(
                   controller: _controller,
                   decoration: InputDecoration( hintText: '왼쪽 이름' ),
-                  onSubmitted: _insertLeftName,
+                  // onSubmitted: _insertLeftName,
                 ),
               ),
             ),
@@ -32,7 +32,7 @@ class FourthPageState extends State<FourthPage> {
             Container(
               child: IconButton(
                 icon: Icon(Icons.send),
-                onPressed: () { _insertLeftName(_controller.text); }
+                onPressed: () { } // _insertLeftName(_controller.text); }
               )
             )
           ]
@@ -41,7 +41,7 @@ class FourthPageState extends State<FourthPage> {
         Expanded(
           child: SizedBox(
             child: FutureBuilder<List<Left>>(
-              future: DB.instance.getLeftName(),
+              future: DB.instance.getLeftWholeData(),
               builder: (context, snapshot) {
                 if( snapshot.hasData ) {
                   return ListView.separated(
@@ -51,12 +51,17 @@ class FourthPageState extends State<FourthPage> {
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
                         title: Text( snapshot.data[index].id.toString() ),
-                        subtitle: Text( snapshot.data[index].name ),
+                        subtitle: Text(
+                          "${snapshot.data[index].dB1.toString()} ${snapshot.data[index].dB2.toString()} "
+                          "${snapshot.data[index].dB3.toString()} ${snapshot.data[index].dB4.toString()} "
+                          "${snapshot.data[index].dB5.toString()} ${snapshot.data[index].dB6.toString()} "
+                          "${snapshot.data[index].dB7.toString()}"
+                        ),
                         trailing:
                           IconButton(
                             alignment: Alignment.center,
                             icon: Icon(Icons.delete),
-                            onPressed: () async { _deleteLeftName(snapshot.data[index].id); }
+                            onPressed: () async { _deleteLeftData(snapshot.data[index].id); }
                           ),
                       );
                     },
@@ -72,8 +77,8 @@ class FourthPageState extends State<FourthPage> {
     );
   }
 
-  _deleteLeftName(int id) { DB.instance.deleteLeftName(id); setState(() {}); }
-  _insertLeftName(String name) { DB.instance.insertLeftName(name); setState(() {}); }
+  _deleteLeftData(int id) { DB.instance.deleteLeftData(id); setState(() {}); }
+  // _insertLeftName(String name) { DB.instance.insertLeftName(name); setState(() {}); }
   // Widget _leftPage() { return FourthLeftPage(); }
   // Widget _rightPage() { return FourthRightPage(); }
 }

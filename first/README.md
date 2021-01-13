@@ -21,3 +21,7 @@
 ## 210108
 - [flutter_blue](https://pub.dev/packages/flutter_blue)를 이용하여 FirstPage에 간단한 블루투스 기기들의 스캔과 연결하는 페이지 구성.
 - '''Unhandled Expection: setState() called after dispose()''' 오류가 나서 추후에 조치 필요.
+
+## 210113
+- [circular_countdown_timer](https://pub.dev/packages/circular_countdown_timer)를 활용하여 FirstPage에 검사페이지 구성. 검사 후 해당 데이터 로컬DB에 저장.
+- ThirdPage에 검사한 데이터를 최신 날짜별로 ListTile 형태로 출력. 해당 날짜를 탭하면 해당 데이터가 그래프 형식으로 출력.

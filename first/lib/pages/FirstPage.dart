@@ -10,29 +10,33 @@ import '../db/db.dart';
 
 class FirstPage extends StatefulWidget {
   @override
-  FirstPageState createState() => new FirstPageState();
+  FirstPageState createState() => FirstPageState();
 }
 
 class FirstPageState extends State<FirstPage> {
-  // AudioManager audioManager;
-  // ShowVolumeUI showVolumeUI = ShowVolumeUI.SHOW;
-
   // _freqLevel: 음원 주파수 단계(총 6단계) _currentFreq: 현재 주파수 크기(250~16000)
-  // _time: 타이머가 돌고있는 시간, 주파수가 언제 들리는지 확인하기 위한 변수 _timeCycle: 10초 다 되면 1로 바뀜(확인용)
-  // _freqData: ... _timerStrokeWidth: 검사 시작하기 전 타이머가 돌 때 움직이는 모션을 숨기기 위한 변수
-  int _freqLevel = 1, _currentFreq = 250, _time = 0, _timeCycle = 0; // _freqData = 0;
+  // _time: 타이머가 돌고있는 시간, 주파수가 언제 들리는지 확인하기 위한 변수
+  // _dbData: 측정 데이터(db) _timerStrokeWidth: 검사 시작하기 전 타이머가 돌 때 움직이는 모션을 숨기기 위한 변수
+  int _freqLevel = 1, _currentFreq = 250, _time = 0;
   double _timerStrokeWidth = 0.0;
   String _earDirection = "오른쪽 귀", _button = "준비가 끝나면 \n 눌러주세요";
   bool _isStart = false, _rightFlag = true;
   IconData _playIcon = Icons.play_arrow_outlined;
 
-  List<int> _freqLeftData = [];
-  List<int> _freqRightData = [];
+  List<int> _dbLeftData = [];
+  List<int> _dbRightData = [];
 
   Timer _timer;
   CountDownController _controller = CountDownController();
   AudioPlayer player = AudioPlayer();
   AudioCache cache = AudioCache();
+
+  // timer setState 오류를 위해 dispose
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
+  }
 
   Widget build(BuildContext context) {
     return Center(
@@ -63,8 +67,7 @@ class FirstPageState extends State<FirstPage> {
                     children: <Widget>[
                       Text("freq: $_currentFreq"),
                       Text("time: $_time"),
-                      Text("timecycle: $_timeCycle"),
-                      // Text("freqdata: $_freqData"),
+                      // Text("timecycle: $_timeCycle"),
                     ],
                   ),
 
@@ -95,7 +98,6 @@ class FirstPageState extends State<FirstPage> {
                   isReverseAnimation: true,
                   isTimerTextShown: false,
                   onComplete: () {
-                    _timeCycle = 1;
                     _timer?.cancel();
                     _playIcon = Icons.play_arrow_outlined;
                     // setState(() { _playIcon = Icons.play_arrow_outlined; });
@@ -128,28 +130,23 @@ class FirstPageState extends State<FirstPage> {
                   ),
                   onPressed: () async {
                     // 오른쪽, 왼쪽 검사 후 종료 안내
-                    if( _freqLeftData.length == 6 && _isStart ) {
-                      _freqLeftData.add(_time); // 마지막 데이터 추가
+                    if( _dbLeftData.length == 6 && _isStart ) {
+                      _dbLeftData.add(_time); // 마지막 데이터 추가
                       _controller?.pause(); _timer?.cancel(); player?.stop();
                       _isStart = false;  _timerStrokeWidth = 0.0; _button = "수고\n하셨습니다";
 
-                      print(_freqRightData);
-                      print(_freqLeftData);
-
-                      await DB.instance.insertLeftData(_freqLeftData);
-                      // await DB.instance.insertRightData(_freqRightData);
+                      await DB.instance.insertLeftData(_dbLeftData);
+                      await DB.instance.insertRightData(_dbRightData);
                       setState(() {});
 
                       return;
                     }
 
                     // 사용자가 검사 끝난 후 버튼 계속 누르는것을 방지하기 위해
-                    else if( _freqLeftData.length == 7 && _isStart == false ) return;
+                    else if( _dbLeftData.length == 7 && _isStart == false ) return;
                     else {
-                      VolumeControl.setVolume(0.1); _controller?.restart(); player?.stop();
+                      VolumeControl.setVolume(0); _controller?.restart(); player?.stop();
                       _playEarCheck();
-                      print(_freqRightData);
-                      print(_freqLeftData);
                     }
                   },
                 ),
@@ -157,7 +154,7 @@ class FirstPageState extends State<FirstPage> {
             ],
           ),
 
-          Text("작은 소리라도 들리면 \n 중앙부를 터치하세요", style: TextStyle(color: Colors.red, fontSize: 20)),
+          Text("작은 소리라도 들리면 \n중앙부를 터치하세요", style: TextStyle(color: Colors.red, fontSize: 15)),
         ],
       ),
     );
@@ -176,9 +173,9 @@ class FirstPageState extends State<FirstPage> {
       else _freqLevel++;
 
       // 걸린 시간을 _freqData에 추가
-      if( _freqRightData.length < 7 ) _freqRightData.add(_time);
-      else if( _freqLeftData.length == 7 ) return;
-      else _freqLeftData.add(_time);
+      if( _dbRightData.length < 7 ) _dbRightData.add(_time);
+      else if( _dbLeftData.length == 7 ) return;
+      else _dbLeftData.add(_time);
       _currentFreq *= 2;
     }
 
@@ -188,7 +185,6 @@ class FirstPageState extends State<FirstPage> {
   void _selectEarCheckFile() async {
     String audioFile;
 
-    _timeCycle = 0;
     _time = 0; // initalize to 0
 
     if(_rightFlag) audioFile = "audio/${_currentFreq}L.wav";
@@ -201,9 +197,7 @@ class FirstPageState extends State<FirstPage> {
   }
 
   void _timerStart() {
-    _timer?.cancel();
     _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
-      // 검사 중 페이지 이동 시 setState called after dispos() 오류 발생. 페이지 이동 전 _timer.cancel()이 필요함.
       setState(() { if(this.mounted) _time++; });
     });
   }

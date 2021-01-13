@@ -5,15 +5,9 @@ import './SecondPage.dart';
 import './ThirdPage.dart';
 import './FourthPage.dart';
 
-String _title = "노래듣기";
-
 class TabBarPage extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MainWidget(),
-    );
-  }
+  Widget build(BuildContext context) { return MainWidget(); }
 }
 
 class MainWidget extends StatefulWidget {
@@ -22,12 +16,8 @@ class MainWidget extends StatefulWidget {
 }
 
 class _MainWidgetState extends State<MainWidget> {
-  int _index;
-
-  void initState() {
-    super.initState();
-    _index = 0;
-  }
+  String _title = "노래듣기";
+  int _index = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +42,7 @@ class _MainWidgetState extends State<MainWidget> {
             switch(_index) {
               case 0: _title = "검사"; break;
               case 1: _title = "Slider"; break;
-              case 2: _title = "그래프 테스트"; break;
+              case 2: _title = "그래프 히스토리"; break;
               case 3: _title = "DB 테스트"; break;
             }
           });

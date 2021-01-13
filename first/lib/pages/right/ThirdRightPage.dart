@@ -1,39 +1,140 @@
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:charts_flutter/flutter.dart';
 
-class ThirdRightPage extends StatelessWidget {
-  final List<charts.Series<LinearSales, int>> seriesList = _createSampleData();
+import '../../db/db.dart';
+import '../../models/Graph.dart';
+import '../../utils/CustomCircleSymbolRenderer.dart';
+
+class ThirdRightPage extends StatefulWidget {
+  final int id;
+  ThirdRightPage(this.id);
+
+  @override
+  ThirdRightPageState createState() => ThirdRightPageState();
+}
+
+class ThirdRightPageState extends State<ThirdRightPage> with AutomaticKeepAliveClientMixin {
+  // tab 왔다갔다 할 시 자동 setstate 방지를 위함
+  @override
+  bool get wantKeepAlive => true;
+
   final bool animate = false;
 
+  // seriesList: chart에 그릴 데이터 변수
+  List<Series<Graph, int>> seriesList = [];
+
+  @override
   Widget build(BuildContext context) {
-    return new charts.LineChart(seriesList,
-      animate: animate,
-      defaultRenderer: new charts.LineRendererConfig(includePoints: true),
+    super.build(context);
+
+    return FutureBuilder<List<int>>(
+      future: DB.instance.getRightData(widget.id),
+      builder: (context, snapshot) {
+        // snapshot.hasData안 하면 The method '[]' was called on null 오류 발생
+        if( snapshot.hasData ) {
+          seriesList = _setChartData(snapshot.data);
+
+          return LineChart(
+            seriesList,
+            animate: animate,
+            defaultRenderer: LineRendererConfig(includePoints: false),
+            flipVerticalAxis: true,
+            domainAxis: NumericAxisSpec(
+              tickProviderSpec: BasicNumericTickProviderSpec(desiredTickCount: 9),
+              tickFormatterSpec: dBTickFormatter,
+            ),
+            primaryMeasureAxis: NumericAxisSpec(
+              tickProviderSpec: BasicNumericTickProviderSpec(desiredTickCount: 10),
+              showAxisLine: true
+              // tickFormatterSpec: hZTickFormatter,
+            ),
+            behaviors: [
+              LinePointHighlighter(symbolRenderer: CustomCircleSymbolRenderer()),
+              ChartTitle(
+                'dB',
+                behaviorPosition: BehaviorPosition.start,
+                titleOutsideJustification: OutsideJustification.middleDrawArea
+              ),
+              ChartTitle(
+                'Hz',
+                behaviorPosition: BehaviorPosition.bottom,
+                titleOutsideJustification: OutsideJustification.middleDrawArea
+              ),
+            ],
+            selectionModels: [
+              SelectionModelConfig(
+                changedListener: (SelectionModel model) {
+                  if(model.hasDatumSelection) {
+                    final value = model.selectedSeries[0].measureFn(model.selectedDatum[0].index).toString();
+                    CustomCircleSymbolRenderer.value = value;
+                  }
+                }
+              )
+            ],
+          );
+        }
+
+        else return Text('Oops');
+      },
     );
   }
 
-  static List<charts.Series<LinearSales, int>> _createSampleData() {
-    final data = [
-      new LinearSales(0, 5),
-      new LinearSales(5, 15),
-      new LinearSales(10, 10),
-      new LinearSales(13, 30),
+  List<Series<Graph, int>> _setChartData(List<int> dBData) {
+    final List<Graph> data = [
+      Graph(-20, -1),
+      Graph(null, -1),
+      Graph(dBData[0], 0),
+      Graph(dBData[1], 1),
+      Graph(dBData[2], 2),
+      Graph(dBData[3], 3),
+      Graph(dBData[4], 4),
+      Graph(dBData[5], 5),
+      Graph(dBData[6], 6),
+      Graph(null, -1),
+      Graph(160, -1),
     ];
 
     return [
-      new charts.Series(
-        id: 'Sales',
+     Series(
+        id: 'earcheck',
         data: data,
-        domainFn: (LinearSales sales, _) => sales.year,
-        measureFn: (LinearSales sales, _) => sales.sales
+        domainFn: (Graph d, _) => d.hZ,
+        measureFn: (Graph d, _) => d.dB
       )
     ];
   }
-}
 
-class LinearSales {
-  final int year;
-  final int sales;
+  final dBTickFormatter = BasicNumericTickFormatterSpec((num i) {
+    String res;
 
-  LinearSales(this.year, this.sales);
+    switch(i) {
+      case -1: res = "";   break;
+      case 0: res = "125"; break;
+      case 1: res = "250"; break;
+      case 2: res = "500"; break;
+      case 3: res = "1K";  break;
+      case 4: res = "2K";  break;
+      case 5: res = "4K";  break;
+      case 6: res = "8K";  break;
+      case 7: res = "";    break;
+    }
+
+    return res;
+  });
+
+  final hZTickFormatter = BasicNumericTickFormatterSpec((num i) {
+    String res;
+
+    switch(i) {
+      case -20: res = "125"; break;
+      case 50: res = "250";  break;
+      case 55: res = "500";  break;
+      case 60: res = "1K";   break;
+      case 30: res = "2K";   break;
+      case 40: res = "4K";   break;
+      case 70: res = "8K";   break;
+    }
+
+    return res;
+  });
 }

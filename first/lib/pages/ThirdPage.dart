@@ -1,51 +1,36 @@
 import 'package:flutter/material.dart';
 
-import './left/ThirdLeftPage.dart';
-import './right/ThirdRightPage.dart';
+import '../db/db.dart';
+import '../models/Left.dart';
+import './ThirdGraphPage.dart';
 
-class ThirdPage extends StatefulWidget {
+class ThirdPage extends StatelessWidget {
   @override
-  ThirdPageState createState() => new ThirdPageState();
-}
-
-class ThirdPageState extends State<ThirdPage> with SingleTickerProviderStateMixin {
-  TabController _controller;
-
-  void initState() {
-    super.initState();
-    _controller = new TabController(length: 2, vsync: this);
-  }
-
   Widget build(BuildContext context) {
-    return Flex(
-      direction: Axis.vertical,
-      children: <Widget>[
-        Container(
-          child: TabBar(
-            indicatorColor: Colors.black,
-            labelStyle: TextStyle(fontSize: 20),
-            labelColor: Colors.black,
-            unselectedLabelStyle: TextStyle(fontSize: 15),
-            controller: _controller,
-            tabs: <Tab>[
-              Tab(text: 'L'),
-              Tab(text: 'R'),
-            ]),
-        ),
+    return FutureBuilder<List<Left>>(
+      future: DB.instance.getDate(),
+      builder: (context, snapshot) {
+        if( snapshot.hasData ) {
+          return ListView.separated(
+            padding: EdgeInsets.all(10.0),
+            separatorBuilder: (context, index) => Divider(color: Color(0xFFF0AD74)),
+            itemCount: snapshot.data.length,
+            itemBuilder: (BuildContext contxt, int index) {
+              return ListTile(
+                title: Text(snapshot.data[index].date),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    ThirdGraphPage(snapshot.data[index].id)
+                  ));
+                },
+              );
+            },
+          );
+        }
 
-        Expanded(
-          child: TabBarView(
-            controller: _controller,
-            children: <Widget>[
-              _leftPage(),
-              _rightPage(),
-            ],
-          ),
-        )
-      ],
+        else if( snapshot.hasError ) return Text('Oops!');
+        else { print('no data'); return Center(child: CircularProgressIndicator() ); }
+      }
     );
   }
-
-  Widget _leftPage() { return ThirdLeftPage(); }
-  Widget _rightPage() { return ThirdRightPage(); }
 }
