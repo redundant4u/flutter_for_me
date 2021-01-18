@@ -18,7 +18,7 @@ class FirstPageState extends State<FirstPage> {
   // _time: 타이머가 돌고있는 시간, 주파수가 언제 들리는지 확인하기 위한 변수
   // _dbData: 측정 데이터(db) _timerStrokeWidth: 검사 시작하기 전 타이머가 돌 때 움직이는 모션을 숨기기 위한 변수
   int _freqLevel = 1, _currentFreq = 250, _time = 0;
-  double _timerStrokeWidth = 0.0;
+  double _timerStrokeWidth = 0.0, _mobilePadding;
   String _earDirection = "오른쪽 귀", _button = "준비가 끝나면 \n 눌러주세요";
   bool _isStart = false, _rightFlag = true;
   IconData _playIcon = Icons.play_arrow_outlined;
@@ -35,10 +35,14 @@ class FirstPageState extends State<FirstPage> {
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
+    _timer?.cancel();
+    player?.stop();
   }
 
   Widget build(BuildContext context) {
+    if( MediaQuery.of(context).size.height > 700 ) _mobilePadding = 563.0;
+    else _mobilePadding = 383.0;
+
     return Center(
       child: Column(
         children: <Widget>[
@@ -67,7 +71,6 @@ class FirstPageState extends State<FirstPage> {
                     children: <Widget>[
                       Text("freq: $_currentFreq"),
                       Text("time: $_time"),
-                      // Text("timecycle: $_timeCycle"),
                     ],
                   ),
 
@@ -88,7 +91,7 @@ class FirstPageState extends State<FirstPage> {
                   duration: 10,
                   controller: _controller,
                   width: MediaQuery.of(context).size.width / 2 + 20,
-                  height: MediaQuery.of(context).size.height / 2 + 30,
+                  height: _mobilePadding,
                   color: Colors.transparent,
                   fillColor: Color(0xff77B28F),
                   backgroundColor: null,
@@ -107,7 +110,7 @@ class FirstPageState extends State<FirstPage> {
 
               Positioned(
                 width: MediaQuery.of(context).size.width / 2 + 20,
-                height: MediaQuery.of(context).size.height / 2 + 30,
+                height: _mobilePadding,
                 child: MaterialButton(
                   shape: CircleBorder(
                     side: BorderSide(

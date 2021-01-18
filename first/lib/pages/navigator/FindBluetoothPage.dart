@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
-class FourthPage extends StatefulWidget {
+class FindBluetoothPage extends StatefulWidget {
   final FlutterBlue flutterBlue = FlutterBlue.instance;
   final List<BluetoothDevice> deviceList = [];
 
   @override
-  FourthPageState createState() => new FourthPageState();
+  FindBluetoothPageState createState() => new FindBluetoothPageState();
 }
 
-class FourthPageState extends State<FourthPage> {
-  String _isScanning;
+class FindBluetoothPageState extends State<FindBluetoothPage> {
+  int result = 0;
+  String _isScanning = "";
   BluetoothDevice _connectedDevice;
   List<BluetoothService> _services;
 
-  void initState() {
-    super.initState();
-    _isScanning = "";
+  @override
+  void dispose() {
+    super.dispose();
+    _stopScan();
   }
 
   _addDeviceToList(final BluetoothDevice device) {
@@ -75,10 +77,8 @@ class FourthPageState extends State<FourthPage> {
               child: Text('Check'),
               color: Colors.grey,
               onPressed: () {
-                if( _connectedDevice != null ) _isScanning = "${_connectedDevice.name}";
-                else _isScanning = "";
-
-                setState(() {});
+                result = 1;
+                Navigator.pop(context, result);
               }
             ),
 
@@ -96,17 +96,15 @@ class FourthPageState extends State<FourthPage> {
   }
 
   void _startScan() {
-    try {
-      widget.flutterBlue.startScan();
-      widget.flutterBlue.connectedDevices.asStream().listen((List<BluetoothDevice> devices) {
-        for( BluetoothDevice device in devices ) _addDeviceToList(device);
-      });
-      widget.flutterBlue.scanResults.listen((List<ScanResult> results) {
-        for( ScanResult result in results ) _addDeviceToList(result.device);
-      });
-    }
+    widget.flutterBlue?.stopScan(); // 'Another scan is already in progress' exception 방지
+    widget.flutterBlue?.startScan();
 
-    catch(e) { print(e); }
+    widget.flutterBlue.connectedDevices.asStream().listen((List<BluetoothDevice> devices) {
+      for( BluetoothDevice device in devices ) _addDeviceToList(device);
+    });
+    widget.flutterBlue.scanResults.listen((List<ScanResult> results) {
+      for( ScanResult result in results ) _addDeviceToList(result.device);
+    });
   }
 
   void _stopScan() {
@@ -122,6 +120,13 @@ class FourthPageState extends State<FourthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Text('주변 기기 찾기', style: TextStyle(color: Colors.black))
+      ),
       body: _buildView(),
     );
   }

@@ -1,8 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.earcheck">
+    <!-- bluetooth permission -->
     <uses-permission android:name="android.permission.BLUETOOTH" />  
 	  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />  
 	  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- noise dectector permission -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="earcheck"
