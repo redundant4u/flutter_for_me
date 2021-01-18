@@ -140,7 +140,6 @@ class NoiseDetectorState extends State<NoiseDetector> {
                         size: Size(150, 150),
                         foregroundPainter: MyPainter(_currentdB),
                         child: Container(
-                          // padding: const EdgeInsets.only(top: 100),
                           width: 0,
                           height: _circleImageHeight,
                           color: Colors.white
