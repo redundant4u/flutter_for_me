@@ -28,3 +28,8 @@
 
 ## 210118
 - [noise_meter](https://pub.dev/packages/noise_meter)를 이용하여 소음 측정을 FourthPage에 임시적으로 구현.
+
+## 210119
+- FirstPage, NoiseDectorPage, FindBluetoothPage를 통합. 검사 조건을 만족해야 FirstPage의 검사를 할 수 있도록 설정.
+- FirstPage 왼쪽 검사로 넘어갈 때의 setState() 문제 해결.
+- 모바일의 크기에 따라 폰트 크기 및 길이가 변할 수 있도록 MediaQuery.dart 생성하여 관리.
