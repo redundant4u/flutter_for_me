@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import './FirstPage.dart';
 import './SecondPage.dart';
 import './ThirdPage.dart';
-import './FourthPage.dart';
+// import './FourthPage.dart';
 
 class TabBarPage extends StatelessWidget {
   @override
@@ -21,7 +21,7 @@ class _MainWidgetState extends State<MainWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -78,7 +78,7 @@ Widget _showPage(int i) {
     case 0: res = FirstPage();  break;
     case 1: res = SecondPage(); break;
     case 2: res = ThirdPage();  break;
-    case 3: res = FourthPage(); break;
+    // case 3: res = FourthPage(); break;
   }
   
   return res;

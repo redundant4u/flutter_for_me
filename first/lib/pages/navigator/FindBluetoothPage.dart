@@ -10,7 +10,6 @@ class FindBluetoothPage extends StatefulWidget {
 }
 
 class FindBluetoothPageState extends State<FindBluetoothPage> {
-  int result = 0;
   String _isScanning = "";
   BluetoothDevice _connectedDevice;
   List<BluetoothService> _services;
@@ -76,10 +75,7 @@ class FindBluetoothPageState extends State<FindBluetoothPage> {
             MaterialButton(
               child: Text('Check'),
               color: Colors.grey,
-              onPressed: () {
-                result = 1;
-                Navigator.pop(context, result);
-              }
+              onPressed: () { Navigator.pop(context, true); }
             ),
 
             MaterialButton(

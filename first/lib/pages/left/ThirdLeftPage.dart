@@ -39,6 +39,12 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
             animate: animate,
             defaultRenderer: LineRendererConfig(includePoints: false),
             flipVerticalAxis: true,
+            layoutConfig: LayoutConfig(
+              topMarginSpec: MarginSpec.fixedPixel(30),
+              rightMarginSpec: MarginSpec.fixedPixel(30),
+              bottomMarginSpec: MarginSpec.fixedPixel(90),
+              leftMarginSpec: MarginSpec.fixedPixel(50)
+            ),
             domainAxis: NumericAxisSpec(
               tickProviderSpec: BasicNumericTickProviderSpec(desiredTickCount: 9),
               tickFormatterSpec: dBTickFormatter,

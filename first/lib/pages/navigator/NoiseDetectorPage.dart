@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:noise_meter/noise_meter.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'dart:async';
 import 'dart:ui';
 import 'dart:math';
 
-import '../TabBarPage.dart';
+import '../../utils/MediaQuery.dart';
 
-class NoiseDetector extends StatefulWidget {
-  NoiseDetector();
+class NoiseDetectorPage extends StatefulWidget {
+  NoiseDetectorPage();
 
   @override
-  NoiseDetectorState createState() => new NoiseDetectorState();
+  NoiseDetectorPageState createState() => new NoiseDetectorPageState();
 }
 
-class NoiseDetectorState extends State<NoiseDetector> {
+class NoiseDetectorPageState extends State<NoiseDetectorPage> {
   int _currentdB = 0; // 표시 데시벨
   String _isTestValidMsg = '테스트에 부적합한 장소입니다'; // 소음 확인 메세지의 텍스트
   Color _isTestValidColor = Colors.red; // 소음 확인 메세지의 색
-
-  double _circleImageHeight;
-  double _cautionImageHeight;
-  double _buttonPadding;
 
   bool _isTestValid = true;
   bool _isRecording = false;
@@ -85,17 +80,9 @@ class NoiseDetectorState extends State<NoiseDetector> {
 
   @override
   Widget build(BuildContext context) {
-    if( MediaQuery.of(context).size.height > 700 ) {
-      _circleImageHeight = 270.0;
-      _cautionImageHeight = 140.0;
-      _buttonPadding = 100.0;
-    }
-
-    else {
-      _circleImageHeight = 230.0;
-      _cautionImageHeight = 65.0;
-      _buttonPadding = 10.0;
-    }
+    final double _mediaHeight = MediaQuery.of(context).size.height;
+    final List<double> _mediaHeightList = getNoiseDectectorPageMediaHeight(_mediaHeight);
+    final List<double> _mediaFontList = getNoiseDectectorPageFontSize(_mediaHeight);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -113,19 +100,19 @@ class NoiseDetectorState extends State<NoiseDetector> {
               child: Text(
                 '소음이 적은 장소로 \n이동하세요',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: _mediaFontList[0]),
               ),
             ),
 
             Container(
               width: MediaQuery.of(context).size.width / 10,
-              height: _cautionImageHeight,
+              height: _mediaHeightList[0],
               child: Image.asset('assets/images/caution.png')
             ),
 
             Container(
               width: MediaQuery.of(context).size.width / 1.5,
-              height: _circleImageHeight,
+              height: _mediaHeightList[1],
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage("assets/images/noise_circle.png"),
@@ -141,7 +128,7 @@ class NoiseDetectorState extends State<NoiseDetector> {
                         foregroundPainter: MyPainter(_currentdB),
                         child: Container(
                           width: 0,
-                          height: _circleImageHeight,
+                          height: _mediaHeightList[1],
                           color: Colors.white
                         ),
                       ),
@@ -158,7 +145,7 @@ class NoiseDetectorState extends State<NoiseDetector> {
                 style: TextStyle(
                   color: Color(0xff77B28F),
                   fontWeight: FontWeight.w100,
-                  fontSize: 20,
+                  fontSize: _mediaFontList[0],
                 ),
               ),
             ),
@@ -171,13 +158,13 @@ class NoiseDetectorState extends State<NoiseDetector> {
                 style: TextStyle(
                   color: _isTestValidColor,
                   fontWeight: FontWeight.w100,
-                  fontSize: 20,
+                  fontSize: _mediaFontList[0],
                 )
               ),
             ),
 
             Container(
-              padding: EdgeInsets.only(top: _buttonPadding),
+              padding: EdgeInsets.only(top: _mediaHeightList[2]),
               child: MaterialButton(
                 child: Text(
                   '계속하기',
@@ -190,10 +177,7 @@ class NoiseDetectorState extends State<NoiseDetector> {
                 minWidth: MediaQuery.of(context).size.width / 1.3,
                 height: 50,
                 onPressed:() {
-                  if( _isTestValid ) {
-                    Navigator.pop(context); Navigator.pop(context);
-                    Navigator.push( context, MaterialPageRoute(builder: (context) => TabBarPage()) );
-                  }
+                  if( _isTestValid ) Navigator.pop(context, true);
                   else print('no');
                 }
               ),
