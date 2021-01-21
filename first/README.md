@@ -15,7 +15,7 @@
 
 ## 210106
 - FirstPage는 TabBar 없이 구성하기 위해 Page에 있는 내용들을 수정함.
-- [flutter_xlider](https://pub.dev/packages/flutter_xlider)를 이용하여 SecondPage에 slider를 만들어 놓음. 기존에 있던 volume 조절 함수는 삭제.
+- ~~[flutter_xlider](https://pub.dev/packages/flutter_xlider)를 이용하여 SecondPage에 slider를 만들어 놓음. 기존에 있던 volume 조절 함수는 삭제.~~
 - 백그라운드 색깔을 white로 통일. appbar, body, bottomNavigationBar 경계 제거.
 
 ## 210108
@@ -33,3 +33,8 @@
 - FirstPage, NoiseDectorPage, FindBluetoothPage를 통합. 검사 조건을 만족해야 FirstPage의 검사를 할 수 있도록 설정.
 - FirstPage 왼쪽 검사로 넘어갈 때의 setState() 문제 해결.
 - 모바일의 크기에 따라 폰트 크기 및 길이가 변할 수 있도록 MediaQuery.dart 생성하여 관리.
+
+## 210121
+- SecondPage에 있던 flutter_xlider 패키지를 삭제하고 slider class로 대체하여 구현.
+- SecondPage 오른쪽, 왼쪽 slider를 통해 값 변경을 DB에 저장하여 보관.
+- FourthPage에 간단한 환경설정 틀 생성.
