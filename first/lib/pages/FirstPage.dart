@@ -1,4 +1,3 @@
-import 'package:first/pages/TestConditionCheckPage.dart';
 import 'package:flutter/material.dart';
 import 'package:volume_control/volume_control.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
@@ -7,6 +6,7 @@ import 'package:audioplayers/audio_cache.dart';
 
 import 'dart:async';
 
+import './navigator/TestConditionCheckPage.dart';
 import '../db/db.dart';
 import '../utils/MediaQuery.dart';
 
@@ -19,14 +19,14 @@ class FirstPageState extends State<FirstPage> {
   // _freqLevel: 음원 주파수 단계(총 6단계) _currentFreq: 현재 주파수 크기(250~16000)
   // _time: 타이머가 돌고있는 시간, 주파수가 언제 들리는지 확인하기 위한 변수
   // _dbData: 측정 데이터(db) _timerStrokeWidth: 검사 시작하기 전 타이머가 돌 때 움직이는 모션을 숨기기 위한 변수
-  int _freqLevel = 1, _currentFreq = 250, _time = 0;
-  double _timerStrokeWidth = 0.0;
+  int _freqLevel = 1, _currentFreq = 250;
+  double _time = 0.0, _timerStrokeWidth = 0.0;
   String _earDirection = "오른쪽 귀", _button = "검사 환경\n확인하기";
   bool _isStart = false, _rightFlag = true, _checkCondition = false;
   IconData _playIcon = Icons.play_arrow_outlined;
 
-  List<int> _dbLeftData = [];
-  List<int> _dbRightData = [];
+  List<double> _dbLeftData = [];
+  List<double> _dbRightData = [];
 
   Timer _timer;
   CountDownController _controller = CountDownController();
@@ -145,8 +145,8 @@ class FirstPageState extends State<FirstPage> {
                         _controller?.pause(); _timer?.cancel(); _player?.stop();
                         _isStart = false;  _timerStrokeWidth = 0.0; _button = "수고\n하셨습니다";
 
-                        await DB.instance.insertLeftData(_dbLeftData);
-                        await DB.instance.insertRightData(_dbRightData);
+                        await DB.instance.insertLeftGraphData(_dbLeftData);
+                        await DB.instance.insertRightGraphData(_dbRightData);
                         setState(() {});
 
                         return;

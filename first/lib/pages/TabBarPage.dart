@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import './FirstPage.dart';
 import './SecondPage.dart';
 import './ThirdPage.dart';
-// import './FourthPage.dart';
+import './FourthPage.dart';
 
 class TabBarPage extends StatelessWidget {
   @override
@@ -41,9 +41,9 @@ class _MainWidgetState extends State<MainWidget> {
 
             switch(_index) {
               case 0: _title = "검사"; break;
-              case 1: _title = "Slider"; break;
-              case 2: _title = "그래프 히스토리"; break;
-              case 3: _title = "DB 테스트"; break;
+              case 1: _title = "EQ"; break;
+              case 2: _title = "그래프 기록"; break;
+              case 3: _title = "환경설정"; break;
             }
           });
         },
@@ -78,7 +78,7 @@ Widget _showPage(int i) {
     case 0: res = FirstPage();  break;
     case 1: res = SecondPage(); break;
     case 2: res = ThirdPage();  break;
-    // case 3: res = FourthPage(); break;
+    case 3: res = FourthPage(); break;
   }
   
   return res;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './navigator/FindBluetoothPage.dart';
-import './navigator/NoiseDetectorPage.dart';
+import './FindBluetoothPage.dart';
+import './NoiseDetectorPage.dart';
 
 class TestConditionCheckPage extends StatefulWidget {
   @override
@@ -19,6 +19,13 @@ class TestConditionCheckPageState extends State<TestConditionCheckPage> {
   Widget build(BuildContext context) {
     // 바로 Center로 적으면 이 페이지로 navigator push 할 시 검은 화면 바탕으로 뜨므로 Scaffold를 적어줘야 함.
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Text('검사 환경 확인하기', style: TextStyle(color: Colors.black))
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

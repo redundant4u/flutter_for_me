@@ -27,8 +27,8 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
   Widget build(BuildContext context) {
     super.build(context);
 
-    return FutureBuilder<List<int>>(
-      future: DB.instance.getLeftData(widget.id),
+    return FutureBuilder<List<double>>(
+      future: DB.instance.getLeftGraphData(widget.id),
       builder: (context, snapshot) {
         // snapshot.hasData안 하면 The method '[]' was called on null 오류 발생
         if( snapshot.hasData ) {
@@ -80,22 +80,23 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
           );
         }
 
-        else return Text('Oops!');
+      // 불어오는데 시간이 걸려서? 로딩하는동안 빈 화면을 만들기 위해
+        else return Text('');
       },
     );
   }
 
-  List<Series<Graph, int>> _setChartData(List<int> dBData) {
+  List<Series<Graph, int>> _setChartData(List<double> dBData) {
     final List<Graph> data = [
       Graph(-20, -1),
-      Graph(null, -1),
-      Graph(dBData[0], 0),
-      Graph(dBData[1], 1),
-      Graph(dBData[2], 2),
-      Graph(dBData[3], 3),
-      Graph(dBData[4], 4),
-      Graph(dBData[5], 5),
-      Graph(dBData[6], 6),
+      Graph(null, -1), // 첫 번째 점과 두 번째 점을 끊기 위해 임의로 null 설정
+      Graph(dBData[0].toInt(), 0),
+      Graph(dBData[1].toInt(), 1),
+      Graph(dBData[2].toInt(), 2),
+      Graph(dBData[3].toInt(), 3),
+      Graph(dBData[4].toInt(), 4),
+      Graph(dBData[5].toInt(), 5),
+      Graph(dBData[6].toInt(), 6),
       Graph(null, -1),
       Graph(160, -1),
     ];

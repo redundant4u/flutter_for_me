@@ -8,7 +8,7 @@ class ThirdPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Left>>(
-      future: DB.instance.getDate(),
+      future: DB.instance.getGraphDate(),
       builder: (context, snapshot) {
         if( snapshot.hasData ) {
           return ListView.separated(

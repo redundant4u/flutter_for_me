@@ -18,7 +18,7 @@ class CustomCircleSymbolRenderer extends CircleSymbolRenderer {
     }) {
     super.paint(canvas, bounds, dashPattern: dashPattern, fillColor: fillColor, strokeColor: strokeColor, strokeWidthPx: strokeWidthPx);
     canvas.drawRect(
-      Rectangle(bounds.left - 5, bounds.top - 30, bounds.width + 10, bounds.height + 10),
+      Rectangle(bounds.left - 5, bounds.top - 30, bounds.width + 11, bounds.height + 10),
       fill: Color.fromHex(code: '#666666'),
     );
     var textStyle = chartStyle.TextStyle();

@@ -12,7 +12,7 @@ List<double> getFirstPageMediaHeight(_mediaHeight) {
 
 List<double> getFirstPageFontSize(_mediaHeight) {
   if( _mediaHeight > 700 ) fontSizeList = [ 20, 30 ];
-  else fontSizeList = [ 15, 20 ];
+  else fontSizeList = [ 15, 25 ];
 
   return fontSizeList;
 }
@@ -32,4 +32,11 @@ List<double> getNoiseDectectorPageFontSize(_mediaHeight) {
   else fontSizeList = [ 15 ];
 
   return fontSizeList;
+}
+
+List<double> getSencondPageHeight(_mediaHeight) {
+  if( _mediaHeight > 900 ) heightList = [ 550 ];
+  else                     heightList = [ 400 ];
+
+  return heightList;
 }
