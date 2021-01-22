@@ -25,6 +25,7 @@ dependencies:
   # BSD
   path: ^1.7.0
   flutter_blue: ^0.7.3
+  shared_preferences: ^0.5.12+4
 
   cupertino_icons: ^1.0.0
 

@@ -3,6 +3,7 @@ import 'package:volume_control/volume_control.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
 
@@ -16,17 +17,17 @@ class FirstPage extends StatefulWidget {
 }
 
 class FirstPageState extends State<FirstPage> {
-  // _freqLevel: 음원 주파수 단계(총 6단계) _currentFreq: 현재 주파수 크기(250~16000)
+  // _freqLevel: 음원 주파수 단계(총 6단계) _currentFreq: 현재 주파수 크기(125~8000)
   // _time: 타이머가 돌고있는 시간, 주파수가 언제 들리는지 확인하기 위한 변수
-  // _dbData: 측정 데이터(db) _timerStrokeWidth: 검사 시작하기 전 타이머가 돌 때 움직이는 모션을 숨기기 위한 변수
-  int _freqLevel = 1, _currentFreq = 250;
+  // _timerStrokeWidth: 검사 시작하기 전 타이머가 돌 때 움직이는 모션을 숨기기 위한 변수
+  int _freqLevel = 1, _currentFreq = 125;
   double _time = 0.0, _timerStrokeWidth = 0.0;
   String _earDirection = "오른쪽 귀", _button = "검사 환경\n확인하기";
-  bool _isStart = false, _rightFlag = true, _checkCondition = false;
+  bool _firstPlay = false, _rightFlag = true, _checkCondition = false;
   IconData _playIcon = Icons.play_arrow_outlined;
 
-  List<double> _dbLeftData = [];
-  List<double> _dbRightData = [];
+  List<double> _dBLeftData = [];
+  List<double> _dBRightData = [];
 
   Timer _timer;
   CountDownController _controller = CountDownController();
@@ -51,7 +52,7 @@ class FirstPageState extends State<FirstPage> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              Row(
+            Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Column(
@@ -136,29 +137,9 @@ class FirstPageState extends State<FirstPage> {
                   ),
                   onPressed: () async {
                     // 검사를 위한 블루투스 기기 및 소음 확인
-                    if( !_checkCondition ) _checkTestCondition();
-
-                    else {
-                      // 오른쪽, 왼쪽 검사 후 종료 안내
-                      if( _dbLeftData.length == 6 && _isStart ) {
-                        _dbLeftData.add(_time); // 마지막 데이터 추가
-                        _controller?.pause(); _timer?.cancel(); _player?.stop();
-                        _isStart = false;  _timerStrokeWidth = 0.0; _button = "수고\n하셨습니다";
-
-                        await DB.instance.insertLeftGraphData(_dbLeftData);
-                        await DB.instance.insertRightGraphData(_dbRightData);
-                        setState(() {});
-
-                        return;
-                      }
-
-                      // 사용자가 검사 끝난 후 버튼 계속 누르는것을 방지하기 위해
-                      else if( _dbLeftData.length == 7 && _isStart == false ) return;
-                      else {
-                        VolumeControl.setVolume(0); _controller?.restart(); _player?.stop();
-                        _playEarCheck();
-                      }
-                    }
+                    if     ( !_checkCondition ) _checkTestCondition();
+                    else if( _isTestEnded()   ) _savedBData();
+                    else                        _earCheck();
                   },
                 ),
               ),
@@ -171,46 +152,80 @@ class FirstPageState extends State<FirstPage> {
     );
   }
 
-  void _playEarCheck() {
-    // 첫 시작일 경우 패스
-    if( _isStart == false ) {
-      _playIcon = Icons.pause; _timerStrokeWidth = 30.0; _button = 'touch'; _isStart = true; 
-      setState(() {});
-    }
-
-    else {
-      // 오른쪽 -> 왼쪽 검사
-      if( _freqLevel == 7 ) { _currentFreq = 125; _freqLevel = 1; _rightFlag = false; _earDirection = "왼쪽 귀"; }
-      else _freqLevel++;
-
-      // 걸린 시간을 _freqData에 추가
-      if( _dbRightData.length < 7 ) _dbRightData.add(_time);
-      else if( _dbLeftData.length == 7 ) return;
-      else _dbLeftData.add(_time);
-      _currentFreq *= 2;
-    }
-
-    _selectEarCheckFile();
+  bool _isTestEnded() {
+    if( _dBLeftData.length >= 6 ) return true;
+    else                          return false;
   }
 
-  void _selectEarCheckFile() async {
+  void _savedBData() async {
+    // 사용자가 검사 끝난 후 버튼 계속 누르는것을 방지하기 위해
+    if( _button != "수고\n하셨습니다" ) {
+      _dBLeftData.add(_time); // 마지막 데이터 추가
+      _controller?.pause(); _timer?.cancel(); _player?.stop();
+      _timerStrokeWidth = 0.0; _button = "수고\n하셨습니다";
+
+      await DB.instance.insertLeftGraphData(_dBLeftData);
+      await DB.instance.insertRightGraphData(_dBRightData);
+
+      setState(() {});
+    }
+  }
+
+  void _earCheck() {
+    VolumeControl.setVolume(0); _controller?.restart(); _player?.stop();
+
+    // 첫 시작일 경우
+    if( !_firstPlay ) _init();
+    else {
+      _checkEarDirection();
+      _insertdBData();
+    }
+
+    _selectAudioFileAndPlay();
+    _time = 0; // initalize to   
+  }
+
+  void _init() {
+    _firstPlay = true;
+    _playIcon = Icons.pause;
+    _timerStrokeWidth = 30.0;
+    _button = 'touch';
+  }
+
+  void _checkEarDirection() {
+    // 오른쪽 -> 왼쪽 검사
+    if( _freqLevel == 7 ) {
+      _currentFreq = 250;
+      _freqLevel = 1;
+      _rightFlag = false;
+      _earDirection = "왼쪽 귀";
+    }
+    else {
+      _freqLevel++;
+      _currentFreq *= 2;
+    }
+  }
+
+  void _selectAudioFileAndPlay() async {
     String audioFile;
 
-    _time = 0; // initalize to 0
-
+    // 왼쪽 마지막 클릭 시 _currentFreq가 16000가 되는 걸 방지
+    if( _currentFreq > 8000 ) _currentFreq = 8000;
     if(_rightFlag) audioFile = "audio/${_currentFreq}L.wav";
     else           audioFile = "audio/${_currentFreq}R.wav";
 
     _player?.stop();
     _player = await _cache.play(audioFile);
 
-    _timerStart();
-  }
-
-  void _timerStart() {
     _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       setState(() { if(this.mounted) _time++; });
     });
+  }
+
+  void _insertdBData() {
+    // 걸린 시간을 _freqData에 추가
+    if( _dBRightData.length < 7 ) _dBRightData.add(_time);
+    else                          _dBLeftData.add(_time);
   }
 
   void _checkTestCondition() async {

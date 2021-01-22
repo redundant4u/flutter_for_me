@@ -15,11 +15,7 @@ class FourthPage extends StatelessWidget {
         return ListTile(
           title: Text(title[index]),
           onTap: () {
-            if( index == 2 ) {
-              print('gogo');
-              Navigator.push( context, MaterialPageRoute(builder: (context) => FourthLeftPage()) );
-            }
-            print('hi $index');
+            if( index == 2 ) Navigator.push( context, MaterialPageRoute(builder: (context) => FourthLeftPage()) );
           }
         );
       },

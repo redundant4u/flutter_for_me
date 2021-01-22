@@ -16,7 +16,7 @@ class MainWidget extends StatefulWidget {
 }
 
 class _MainWidgetState extends State<MainWidget> {
-  String _title = "노래듣기";
+  String _title = "검사";
   int _index = 0;
 
   @override
