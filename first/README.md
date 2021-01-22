@@ -38,3 +38,6 @@
 - SecondPage에 있던 flutter_xlider 패키지를 삭제하고 slider class로 대체하여 구현.
 - SecondPage 오른쪽, 왼쪽 slider를 통해 값 변경을 DB에 저장하여 보관.
 - FourthPage에 간단한 환경설정 틀 생성.
+
+## 210122
+- FirstPage 코드 수정. 변수명, 함수명, 로직 순서 수정. ~~최대한 깔끔하게 짜려 노력했지만 부족ㅠㅠ~~
