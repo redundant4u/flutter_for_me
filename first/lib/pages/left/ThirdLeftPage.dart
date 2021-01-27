@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart';
+// import 'dart:ui';
 
 import '../../db/db.dart';
 import '../../models/Graph.dart';
@@ -18,8 +19,6 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
   @override
   bool get wantKeepAlive => true;
 
-  final bool animate = false;
-
   // seriesList: chart에 그릴 데이터 변수
   List<Series<Graph, int>> seriesList = [];
 
@@ -36,9 +35,10 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
 
           return LineChart(
             seriesList,
-            animate: animate,
-            defaultRenderer: LineRendererConfig(includePoints: false),
+            animate: false,
+            defaultRenderer: LineRendererConfig(includePoints: true),
             flipVerticalAxis: true,
+            
             layoutConfig: LayoutConfig(
               topMarginSpec: MarginSpec.fixedPixel(30),
               rightMarginSpec: MarginSpec.fixedPixel(30),
@@ -55,7 +55,22 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
               // tickFormatterSpec: hZTickFormatter,
             ),
             behaviors: [
-              LinePointHighlighter(symbolRenderer: CustomCircleSymbolRenderer()),
+              LinePointHighlighter(
+                symbolRenderer: CustomCircleSymbolRenderer(),
+                drawFollowLinesAcrossChart: true,
+                showHorizontalFollowLine: LinePointHighlighterFollowLineType.all,
+              ),
+              RangeAnnotation([
+                RangeAnnotationSegment(
+                  40.0, 20.0, RangeAnnotationAxisType.measure, color: Color.fromHex(code: '#72CC82')
+                ),
+                RangeAnnotationSegment(
+                  80.0, 40.0, RangeAnnotationAxisType.measure, color: Color.fromHex(code: '#FFD700')
+                ),
+                RangeAnnotationSegment(
+                  120.0, 80.0, RangeAnnotationAxisType.measure, color: ColorUtil.fromDartColor(Colors.red.shade300)
+                ),
+              ]),
               ChartTitle(
                 'dB',
                 behaviorPosition: BehaviorPosition.start,
@@ -71,7 +86,7 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
               SelectionModelConfig(
                 changedListener: (SelectionModel model) {
                   if(model.hasDatumSelection) {
-                    final value = model.selectedSeries[0].measureFn(model.selectedDatum[0].index).toString();
+                    final int value = model.selectedSeries[0].measureFn(model.selectedDatum[0].index);
                     CustomCircleSymbolRenderer.value = value;
                   }
                 }
@@ -106,7 +121,7 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
         id: 'earcheck',
         data: data,
         domainFn: (Graph d, _) => d.hZ,
-        measureFn: (Graph d, _) => d.dB
+        measureFn: (Graph d, _) => d.dB,
       )
     ];
   }

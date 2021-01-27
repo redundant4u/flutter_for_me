@@ -18,8 +18,6 @@ class ThirdRightPageState extends State<ThirdRightPage> with AutomaticKeepAliveC
   @override
   bool get wantKeepAlive => true;
 
-  final bool animate = false;
-
   // seriesList: chart에 그릴 데이터 변수
   List<Series<Graph, int>> seriesList = [];
 
@@ -36,7 +34,7 @@ class ThirdRightPageState extends State<ThirdRightPage> with AutomaticKeepAliveC
 
           return LineChart(
             seriesList,
-            animate: animate,
+            animate: false,
             defaultRenderer: LineRendererConfig(includePoints: false),
             flipVerticalAxis: true,
             layoutConfig: LayoutConfig(
@@ -55,7 +53,22 @@ class ThirdRightPageState extends State<ThirdRightPage> with AutomaticKeepAliveC
               // tickFormatterSpec: hZTickFormatter,
             ),
             behaviors: [
-              LinePointHighlighter(symbolRenderer: CustomCircleSymbolRenderer()),
+              LinePointHighlighter(
+                symbolRenderer: CustomCircleSymbolRenderer(),
+                drawFollowLinesAcrossChart: true,
+                showHorizontalFollowLine: LinePointHighlighterFollowLineType.all,
+              ),
+              RangeAnnotation([
+                RangeAnnotationSegment(
+                  40.0, 20.0, RangeAnnotationAxisType.measure, color: ColorUtil.fromDartColor(Colors.green.shade400)
+                ),
+                RangeAnnotationSegment(
+                  80.0, 40.0, RangeAnnotationAxisType.measure, color: ColorUtil.fromDartColor(Colors.yellow.shade400)
+                ),
+                RangeAnnotationSegment(
+                  120.0, 80.0, RangeAnnotationAxisType.measure, color: ColorUtil.fromDartColor(Colors.red.shade400)
+                ),
+              ]),
               ChartTitle(
                 'dB',
                 behaviorPosition: BehaviorPosition.start,
@@ -71,7 +84,7 @@ class ThirdRightPageState extends State<ThirdRightPage> with AutomaticKeepAliveC
               SelectionModelConfig(
                 changedListener: (SelectionModel model) {
                   if(model.hasDatumSelection) {
-                    final value = model.selectedSeries[0].measureFn(model.selectedDatum[0].index).toString();
+                    final int value = model.selectedSeries[0].measureFn(model.selectedDatum[0].index);
                     CustomCircleSymbolRenderer.value = value;
                   }
                 }

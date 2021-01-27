@@ -5,7 +5,8 @@ import 'package:charts_flutter/src/text_style.dart' as chartStyle;  // ignore: i
 import 'dart:math';
 
 class CustomCircleSymbolRenderer extends CircleSymbolRenderer {
-  static String value;
+  static int value;
+  int _width = 0;
 
   @override
   void paint(ChartCanvas canvas, Rectangle<num> bounds,
@@ -16,16 +17,24 @@ class CustomCircleSymbolRenderer extends CircleSymbolRenderer {
       Color strokeColor,
       double strokeWidthPx
     }) {
+
+    getWidth();
+
     super.paint(canvas, bounds, dashPattern: dashPattern, fillColor: fillColor, strokeColor: strokeColor, strokeWidthPx: strokeWidthPx);
     canvas.drawRect(
-      Rectangle(bounds.left - 5, bounds.top - 30, bounds.width + 11, bounds.height + 10),
+      Rectangle(bounds.left - 5, bounds.top - 30, bounds.width + _width, bounds.height + 10),
       fill: Color.fromHex(code: '#666666'),
     );
-    var textStyle = chartStyle.TextStyle();
+    TextStyle textStyle = chartStyle.TextStyle();
     textStyle.color = Color.white;
     textStyle.fontSize = 15;
     canvas.drawText(
-      chartText.TextElement("$value", style: textStyle), (bounds.left - 4.5).round(), (bounds.top - 28).round()
+      chartText.TextElement(value.toString(), style: textStyle), (bounds.left - 4.5).round(), (bounds.top - 28).round()
     );
+  }
+
+  void getWidth() {
+    if( value > 100 ) _width = 20;
+    else              _width = 10;
   }
 }
