@@ -7,7 +7,7 @@ import '../models/Right.dart';
 class DB {
   DB._();
 
-  static const databaseName = "9.db";
+  static const databaseName = "10.db";
   static final DB instance = DB._();
   static Database _database;
 
