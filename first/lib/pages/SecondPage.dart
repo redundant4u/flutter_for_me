@@ -11,11 +11,13 @@ class SecondPage extends StatefulWidget {
 class SecondPageState extends State<SecondPage> with SingleTickerProviderStateMixin {
   TabController _controller;
 
+  @override
   void initState() {
     super.initState();
     _controller = new TabController(length: 2, vsync: this);
   }
 
+  @override
   Widget build(BuildContext context) {
     return Flex(
       direction: Axis.vertical,

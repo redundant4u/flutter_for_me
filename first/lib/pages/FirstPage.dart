@@ -23,7 +23,7 @@ class FirstPageState extends State<FirstPage> {
   int _freqLevel = 1, _currentFreq = 125;
   double _time = 0.0, _timerStrokeWidth = 0.0;
   String _earDirection = "오른쪽 귀", _button = "검사 환경\n확인하기";
-  bool _firstPlay = false, _rightFlag = true, _checkCondition = false;
+  bool _firstPlay = false, _rightFlag = true, _checkCondition = false, _preventMultipleClick = false;
   IconData _playIcon = Icons.play_arrow_outlined;
 
   List<double> _dBLeftData = [];
@@ -172,17 +172,21 @@ class FirstPageState extends State<FirstPage> {
   }
 
   void _earCheck() {
-    VolumeControl.setVolume(0); _controller?.restart(); _player?.stop();
+    if( !_preventMultipleClick ) {
+      _preventMultipleClick = true;
 
-    // 첫 시작일 경우
-    if( !_firstPlay ) _init();
-    else {
-      _checkEarDirection();
-      _insertdBData();
+      VolumeControl.setVolume(0); _controller?.restart(); _player?.stop();
+
+      // 첫 시작일 경우
+      if( !_firstPlay ) _init();
+      else {
+        _checkEarDirection();
+        _insertdBData();
+      }
+
+      _selectAudioFileAndPlay();
+      _time = 0; // initalize to
     }
-
-    _selectAudioFileAndPlay();
-    _time = 0; // initalize to   
   }
 
   void _init() {
@@ -220,6 +224,8 @@ class FirstPageState extends State<FirstPage> {
     _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       setState(() { if(this.mounted) _time++; });
     });
+
+    _preventMultipleClick = false;
   }
 
   void _insertdBData() {
