@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 
 import '../models/Left.dart';
 import '../models/Right.dart';
+import '../models/Users.dart';
 
 class DB {
   DB._();
@@ -25,6 +26,7 @@ class DB {
         await database.execute("CREATE TABLE right_graphs (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, dB1 REAL, dB2 REAL, dB3 REAL, dB4 REAL, dB5 REAL, dB6 REAL, dB7 REAL, date TEXT)");
         await database.execute("CREATE TABLE left_eq      (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, dB1 REAL, dB2 REAL, dB3 REAL, dB4 REAL, dB5 REAL, dB6 REAL, dB7 REAL, date TEXT)");
         await database.execute("CREATE TABLE right_eq     (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, dB1 REAL, dB2 REAL, dB3 REAL, dB4 REAL, dB5 REAL, dB6 REAL, dB7 REAL, date TEXT)");
+        await database.execute("CREATE TABLE users        (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL, gender INTEGER NOT NULL, birth TEXT NOT NULL");
       }
     );
   }
@@ -213,5 +215,13 @@ class DB {
         date: maps[i]['date']
       );
     });
+  }
+
+  // privacy information
+  Future<void> insertPrivacyInformation(Users data) async {
+    final Database _database = await database;
+
+    Users users = Users(name: data.name, gender: data.gender, birth: data.birth);
+    await _database.insert( 'users', users.toMap(), conflictAlgorithm: ConflictAlgorithm.replace );
   }
 }

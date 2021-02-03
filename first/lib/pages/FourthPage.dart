@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import './left/FourthLeftPage.dart';
+import './navigator/PrivacyInformation.dart';
 
 class FourthPage extends StatelessWidget {
-  final List<String> title = [ '회원가입', '로그인', 'EQ DB' ];
+  final List<String> title = [ '개인정보 보기', 'EQ DB' ];
 
   @override
   Widget build(BuildContext context ) {
@@ -15,7 +16,15 @@ class FourthPage extends StatelessWidget {
         return ListTile(
           title: Text(title[index]),
           onTap: () {
-            if( index == 2 ) Navigator.push( context, MaterialPageRoute(builder: (context) => FourthLeftPage()) );
+            switch( index ) {
+              case 0:
+                Navigator.push( context, MaterialPageRoute(builder: (context) => PrivacyInformation()) );
+                break;
+
+              case 1:
+                Navigator.push( context, MaterialPageRoute(builder: (context) => FourthLeftPage()) );
+                break;
+            }
           }
         );
       },
