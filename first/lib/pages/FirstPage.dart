@@ -7,8 +7,8 @@ import 'package:audioplayers/audio_cache.dart';
 
 import 'dart:async';
 
+import '../db/Graph.dart';
 import './navigator/TestConditionCheckPage.dart';
-import '../db/db.dart';
 import '../utils/MediaQuery.dart';
 
 class FirstPage extends StatefulWidget {
@@ -164,8 +164,8 @@ class FirstPageState extends State<FirstPage> {
       _controller?.pause(); _timer?.cancel(); _player?.stop();
       _timerStrokeWidth = 0.0; _button = "수고\n하셨습니다";
 
-      await DB.instance.insertLeftGraphData(_dBLeftData);
-      await DB.instance.insertRightGraphData(_dBRightData);
+      await insertLeftGraphData(_dBLeftData);
+      await insertRightGraphData(_dBRightData);
 
       setState(() {});
     }

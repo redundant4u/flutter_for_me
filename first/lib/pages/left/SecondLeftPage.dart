@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../db/db.dart';
+import '../../db/EQ.dart';
 import '../../utils/MediaQuery.dart';
 
 class SecondLeftPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
   @override
   void initState() {
     super.initState();
-    leftEQ = DB.instance.getLeftEQData();
+    leftEQ = getLeftEQData();
   }
 
   @override
@@ -54,7 +54,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         label: _sliderValue[0].toString(),
                         onChanged: (double value) { _setSliderValue(value, 0); },
                         onChangeEnd: (double value) async {
-                          await DB.instance.upsertLeftEQData(_sliderValue);
+                          await upsertLeftEQData(_sliderValue);
                         },
                       ),
                     ),
@@ -78,7 +78,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         label: _sliderValue[1].toString(),
                         onChanged: (double value) { _setSliderValue(value, 1); },
                         onChangeEnd: (double value) async {
-                          await DB.instance.upsertLeftEQData(_sliderValue);
+                          await upsertLeftEQData(_sliderValue);
                         },
                       ),
                     ),
@@ -102,7 +102,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         label: _sliderValue[2].toString(),
                         onChanged: (double value) { _setSliderValue(value, 2); },
                         onChangeEnd: (double value) async {
-                          await DB.instance.upsertLeftEQData(_sliderValue);
+                          await upsertLeftEQData(_sliderValue);
                         },
                       ),
                     ),
@@ -126,7 +126,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         label: _sliderValue[3].toString(),
                         onChanged: (double value) { _setSliderValue(value, 3); },
                         onChangeEnd: (double value) async {
-                          await DB.instance.upsertLeftEQData(_sliderValue);
+                          await upsertLeftEQData(_sliderValue);
                         },
                       ),
                     ),
@@ -150,7 +150,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         label: _sliderValue[4].toString(),
                         onChanged: (double value) { _setSliderValue(value, 4); },
                         onChangeEnd: (double value) async {
-                          await DB.instance.upsertLeftEQData(_sliderValue);
+                          await upsertLeftEQData(_sliderValue);
                         },
                       ),
                     ),
@@ -174,7 +174,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         label: _sliderValue[5].toString(),
                         onChanged: (double value) { _setSliderValue(value, 5); },
                         onChangeEnd: (double value) async {
-                          await DB.instance.upsertLeftEQData(_sliderValue);
+                          await upsertLeftEQData(_sliderValue);
                         },
                       ),
                     ),
@@ -198,7 +198,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         label: _sliderValue[6].toString(),
                         onChanged:   (double value) { _setSliderValue(value, 6); },
                         onChangeEnd: (double value) async {
-                          await DB.instance.upsertLeftEQData(_sliderValue);
+                          await upsertLeftEQData(_sliderValue);
                         },
                       ),
                     ),

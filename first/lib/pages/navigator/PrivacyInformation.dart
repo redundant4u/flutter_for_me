@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../models/Users.dart';
-import '../../db/db.dart';
+import '../../db/User.dart';
+import '../../models/User.dart';
 
 class PrivacyInformation extends StatefulWidget {
   @override
@@ -10,15 +10,31 @@ class PrivacyInformation extends StatefulWidget {
 }
 
 class PrivacyInformationState extends State<PrivacyInformation> {
-  String _birthDate;
-  List<bool> _genderSelected = [ true, false ];
+  List<bool> _genderSelected = [ false, false ];
+  User _user = User();
 
-  TextEditingController _controller = TextEditingController();
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
+  }
+
+  Future<void> _getUserData() async {
+    _user = await getPrivacyInformationData();
+
+    _controller = TextEditingController(text: _user.name);
+    _user.male   == 1 ? _genderSelected[0] = true : _genderSelected[0] = false;
+    _user.female == 1 ? _genderSelected[1] = true : _genderSelected[1] = false;
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -62,6 +78,10 @@ class PrivacyInformationState extends State<PrivacyInformation> {
                         errorBorder: InputBorder.none,
                         disabledBorder: InputBorder.none,
                       ),
+                      onSubmitted: (name) async {
+                        _user.name = name;
+                        _upsertUserData();
+                      },
                     )
                   )
                 ],
@@ -96,7 +116,7 @@ class PrivacyInformationState extends State<PrivacyInformation> {
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.only(top: 18.0, left: 10.0),
                       child: Text(
-                        _birthDate ?? '',
+                        _user.birth ?? '',
                         style: TextStyle(
                           fontSize: 18.0
                         )
@@ -142,7 +162,13 @@ class PrivacyInformationState extends State<PrivacyInformation> {
                             Text('남'),
                             Text('여'),
                           ],
-                          onPressed: (int index) { _selectGender(index); },
+                          onPressed: (int index) {
+                            _selectGender(index);
+
+                            if( _genderSelected[0] ) { _user.male = 1; _user.female = 0; }
+                            else                     { _user.male = 0; _user.female = 1; }
+                            _upsertUserData();
+                          },
                           isSelected: _genderSelected,
                         );
                       },
@@ -151,25 +177,6 @@ class PrivacyInformationState extends State<PrivacyInformation> {
                 ],
               ),
             ),
-
-            Container(
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.only(top: 10.0, right: 40.0),
-              child: MaterialButton(
-                height: 40.0,
-                color: Colors.grey,
-                child: Text('저장'),
-                onPressed: () async {
-                  Users users = Users(
-                    name: _controller.text,
-                    gender: _genderSelected,
-                    birth: _birthDate
-                  );
-
-                  await DB.instance.insertPrivacyInformation(users);
-                },
-              )
-            ),
           ]
         )
       )
@@ -177,15 +184,18 @@ class PrivacyInformationState extends State<PrivacyInformation> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    if( _user.birth == null ) _user.birth = '1997-09-11';
+
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.parse('1997-09-11'),
+      initialDate: DateTime.parse(_user.birth),
       firstDate: DateTime(1920, 1),
       lastDate: DateTime(2020, 1)
     );
 
     if( picked != null ) {
-      setState(() { _birthDate = DateFormat('yyyy-MM-dd').format(picked).toString(); });
+      setState(() { _user.birth = DateFormat('yyyy-MM-dd').format(picked).toString(); });
+      _upsertUserData();
     }
   }
 
@@ -202,4 +212,6 @@ class PrivacyInformationState extends State<PrivacyInformation> {
 
       setState(() {});
   }
+
+  Future<void> _upsertUserData() async { await upsertPrivacyInformation(_user); }
 }

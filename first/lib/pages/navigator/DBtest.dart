@@ -1,47 +1,32 @@
 import 'package:flutter/material.dart';
 
-import '../../db/db.dart';
-import '../../models/Left.dart';
+import '../../models/User.dart';
+import '../../db/User.dart';
 
-class FourthLeftPage extends StatefulWidget {
+class DBtest extends StatefulWidget {
   @override
-  FourthLeftPageState createState() => new FourthLeftPageState();
+  DBtestState createState() => new DBtestState();
 }
 
-class FourthLeftPageState extends State<FourthLeftPage> {
+class DBtestState extends State<DBtest> {
   final TextEditingController _controller = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Text('DB 보기', style: TextStyle(color: Colors.black))
+      ),
       body: Column(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration( hintText: '왼쪽 이름' ),
-                    // onSubmitted: _insertLeftName,
-                  ),
-                ),
-              ),
-
-              Container(
-                child: IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () { } // _insertLeftName(_controller.text); }
-                )
-              )
-            ]
-          ),
-
           Expanded(
             child: SizedBox(
-              child: FutureBuilder<List<Left>>(
-                future: DB.instance.getEQTEST(),
+              child: FutureBuilder<List<User>>(
+                future: getUserList(),
                 builder: (context, snapshot) {
                   if( snapshot.hasData ) {
                     return ListView.separated(
@@ -56,7 +41,7 @@ class FourthLeftPageState extends State<FourthLeftPage> {
                             IconButton(
                               alignment: Alignment.center,
                               icon: Icon(Icons.delete),
-                              // onPressed: () async { _deleteLeftName(snapshot.data[index].id); }
+                              onPressed: () async { _deleteUser(); }
                             ),
                         );
                       },
@@ -74,6 +59,6 @@ class FourthLeftPageState extends State<FourthLeftPage> {
     );
   }
 
-  // _deleteLeftName(int id) { DB.instance.deleteLeftName(id); setState(() {}); }
+  _deleteUser() { deleteUser(); setState(() {}); }
   // _insertLeftName(String name) { DB.instance.insertLeftName(name); setState(() {}); }
 }

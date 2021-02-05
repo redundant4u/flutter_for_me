@@ -1,15 +1,16 @@
-class Users {
+class User {
   int id;
-  List<bool> gender;
+  int male, female;
   String name, birth;
 
-  Users({ this.id, this.name, this.gender, this.birth });
+  User({ this.id, this.name, this.male, this.female, this.birth });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'gender': gender,
+      'male': male,
+      'female': female,
       'birth': birth
     };
   }

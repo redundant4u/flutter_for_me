@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart';
-// import 'dart:ui';
 
-import '../../db/db.dart';
+import '../../db/Graph.dart';
 import '../../models/Graph.dart';
 import '../../utils/CustomCircleSymbolRenderer.dart';
 
@@ -27,7 +26,7 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
     super.build(context);
 
     return FutureBuilder<List<double>>(
-      future: DB.instance.getLeftGraphData(widget.id),
+      future: getLeftGraphData(widget.id),
       builder: (context, snapshot) {
         // snapshot.hasData안 하면 The method '[]' was called on null 오류 발생
         if( snapshot.hasData ) {

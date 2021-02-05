@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import './left/FourthLeftPage.dart';
+import './navigator/DBtest.dart';
 import './navigator/PrivacyInformation.dart';
 
 class FourthPage extends StatelessWidget {
-  final List<String> title = [ '개인정보 보기', 'EQ DB' ];
+  final List<String> title = [ '개인정보 보기', 'DB 보기' ];
 
   @override
   Widget build(BuildContext context ) {
@@ -22,7 +22,7 @@ class FourthPage extends StatelessWidget {
                 break;
 
               case 1:
-                Navigator.push( context, MaterialPageRoute(builder: (context) => FourthLeftPage()) );
+                Navigator.push( context, MaterialPageRoute(builder: (context) => DBtest()) );
                 break;
             }
           }

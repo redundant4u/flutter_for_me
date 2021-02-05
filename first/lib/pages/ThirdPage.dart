@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../db/db.dart';
+import '../db/Graph.dart';
 import '../models/Left.dart';
 import './ThirdGraphPage.dart';
 
@@ -8,7 +8,7 @@ class ThirdPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Left>>(
-      future: DB.instance.getGraphDate(),
+      future: getGraphDate(),
       builder: (context, snapshot) {
         if( snapshot.hasData ) {
           return ListView.separated(
