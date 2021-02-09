@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../db/EQ.dart';
+import '../../db/Graph.dart';
 import '../../utils/MediaQuery.dart';
+import '../../utils/GetEQColor.dart';
 
 class SecondLeftPage extends StatefulWidget {
   @override
@@ -15,12 +17,27 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
   // leftEQ: futurebuilder의 future에 바로 getLeftEQData를 넣을 경우 값 변화가 안되므로 
   // 값을 한 번만 로딩하기 위해 future 변수를 만듬.
   List<double> _sliderValue = [];
-  Future leftEQ;
+  List<IconData> _eqIcons = [];
+  List<Color> _eqColors = [];
+
+  Future _leftEQ;
 
   @override
   void initState() {
     super.initState();
-    leftEQ = getLeftEQData();
+    _leftEQ = getLeftEQData();
+    _setEQState();
+  }
+
+  void _setEQState() async {
+    List<double> _leftGraphData = await getLeftGraphData();
+    List<double> _tmpLeftEQ = await getLeftEQData();
+
+    List tmp = await getEQIcons(_tmpLeftEQ, _leftGraphData);
+    _eqIcons  = tmp[0];
+    _eqColors = tmp[1];
+
+    setState(() {});
   }
 
   @override
@@ -31,7 +48,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
     final List<double> _mediaHeightList = getSencondPageHeight(_mediaHeight);
 
     return FutureBuilder<List<double>>(
-      future: leftEQ,
+      future: _leftEQ,
       builder: (context, snapshot) {
         if( snapshot.hasData ) {
           _sliderValue = snapshot.data;
@@ -39,7 +56,6 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-
               Column(
                 children: <Widget>[
                   Container(
@@ -55,12 +71,22 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         onChanged: (double value) { _setSliderValue(value, 0); },
                         onChangeEnd: (double value) async {
                           await upsertLeftEQData(_sliderValue);
+                          _setEQState();
                         },
                       ),
                     ),
                   ),
 
-                  Text('125')
+                  Text('125'),
+
+                  Container(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: Icon(
+                      _eqIcons[0],
+                      color: _eqColors[0],
+                      size: 30.0
+                    )
+                  )
                 ],
               ),
 
@@ -79,12 +105,22 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         onChanged: (double value) { _setSliderValue(value, 1); },
                         onChangeEnd: (double value) async {
                           await upsertLeftEQData(_sliderValue);
+                          _setEQState();
                         },
                       ),
                     ),
                   ),
 
-                  Text('250')
+                  Text('250'),
+
+                  Container(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: Icon(
+                      _eqIcons[1],
+                      color: _eqColors[1],
+                      size: 30.0
+                    ),
+                  )
                 ],
               ),
 
@@ -103,12 +139,22 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         onChanged: (double value) { _setSliderValue(value, 2); },
                         onChangeEnd: (double value) async {
                           await upsertLeftEQData(_sliderValue);
+                          _setEQState();
                         },
                       ),
                     ),
                   ),
 
-                  Text('500')
+                  Text('500'),
+
+                  Container(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: Icon(
+                      _eqIcons[2],
+                      color: _eqColors[2],
+                      size: 30.0
+                    )
+                  ),
                 ],
               ),
 
@@ -127,12 +173,22 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         onChanged: (double value) { _setSliderValue(value, 3); },
                         onChangeEnd: (double value) async {
                           await upsertLeftEQData(_sliderValue);
+                          _setEQState();
                         },
                       ),
                     ),
                   ),
 
-                  Text('1K')
+                  Text('1K'),
+
+                  Container(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: Icon(
+                      _eqIcons[3],
+                      color: _eqColors[3],
+                      size: 30.0
+                    )
+                  ),
                 ],
               ),
 
@@ -151,12 +207,22 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         onChanged: (double value) { _setSliderValue(value, 4); },
                         onChangeEnd: (double value) async {
                           await upsertLeftEQData(_sliderValue);
+                          _setEQState();
                         },
                       ),
                     ),
                   ),
 
-                  Text('2K')
+                  Text('2K'),
+
+                  Container(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: Icon(
+                      _eqIcons[4],
+                      color: _eqColors[4],
+                      size: 30.0
+                    )
+                  ),
                 ],
               ),
 
@@ -175,12 +241,22 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         onChanged: (double value) { _setSliderValue(value, 5); },
                         onChangeEnd: (double value) async {
                           await upsertLeftEQData(_sliderValue);
+                          _setEQState();
                         },
                       ),
                     ),
                   ),
 
-                  Text('4K')
+                  Text('4K'),
+
+                  Container(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: Icon(
+                      _eqIcons[5],
+                      color: _eqColors[5],
+                      size: 30.0
+                    )
+                  ),
                 ],
               ),
 
@@ -199,12 +275,22 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                         onChanged:   (double value) { _setSliderValue(value, 6); },
                         onChangeEnd: (double value) async {
                           await upsertLeftEQData(_sliderValue);
+                          _setEQState();
                         },
                       ),
                     ),
                   ),
 
                   Text('8K'),
+
+                  Container(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: Icon(
+                      _eqIcons[6],
+                      color: _eqColors[6],
+                      size: 30.0
+                    )
+                  ),
                 ],
               ),
 
@@ -220,7 +306,7 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
   void _setSliderValue(double value, int index) {
     // tap으로 값 변화 방지 && 스크롤 속도 조절
     if( (_sliderValue[index] - value).abs() < 50 ) {
-        setState( () { _sliderValue[index] = value; });
-      }
+      setState( () { _sliderValue[index] = value; });
+    }
   }
 }

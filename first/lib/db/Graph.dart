@@ -33,8 +33,15 @@ Future<List<Left>> getLeftGrpahWholeData() async {
   });
 }
 
-Future<List<double>> getLeftGraphData(int id) async {
+Future<List<double>> getLeftGraphData([ int id ]) async {
   final Database _database = await DB.instance.database;
+
+  if( id == null ) {
+    print('id is null!');
+    final List<Map<String, dynamic>> latestId = await _database.rawQuery("SELECT id FROM left_graphs ORDER BY id DESC LIMIT 0, 1");
+    id = latestId[0]['id'];
+  }
+
   final List<Map<String, dynamic>> maps = await _database.query('left_graphs', where: 'id = ?', whereArgs: [id]);
   final List<double> res = [
     maps[0]['dB1'],
@@ -66,8 +73,15 @@ Future<void> insertRightGraphData(List<double> data) async {
     await _database.insert( 'right_graphs', right.toMap(), conflictAlgorithm: ConflictAlgorithm.replace );
 }
 
-Future<List<double>> getRightGraphData(int id) async {
+Future<List<double>> getRightGraphData([ int id ]) async {
   final Database _database = await DB.instance.database;
+
+  if( id == null ) {
+    print('id is null!');
+    final List<Map<String, dynamic>> latestId = await _database.rawQuery("SELECT id FROM right_graphs ORDER BY id DESC LIMIT 0, 1");
+    id = latestId[0]['id'];
+  }
+
   final List<Map<String, dynamic>> maps = await _database.query('right_graphs', where: 'id = ?', whereArgs: [id]);
   final List<double> res = [
     maps[0]['dB1'],
