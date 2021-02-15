@@ -38,12 +38,14 @@ Future<List<double>> getLeftGraphData([ int id ]) async {
 
   if( id == null ) {
     print('id is null!');
+
     final List<Map<String, dynamic>> latestId = await _database.rawQuery("SELECT id FROM left_graphs ORDER BY id DESC LIMIT 0, 1");
-    id = latestId[0]['id'];
+    try      { id = latestId[0]['id']; }
+    catch(e) { return []; }
   }
 
   final List<Map<String, dynamic>> maps = await _database.query('left_graphs', where: 'id = ?', whereArgs: [id]);
-  final List<double> res = [
+  final List<double> result = [
     maps[0]['dB1'],
     maps[0]['dB2'],
     maps[0]['dB3'],
@@ -53,7 +55,7 @@ Future<List<double>> getLeftGraphData([ int id ]) async {
     maps[0]['dB7']
   ];
 
-  return res;
+  return result;
 }
 
 Future<void> deleteLeftGraphData(int id) async {
@@ -83,7 +85,7 @@ Future<List<double>> getRightGraphData([ int id ]) async {
   }
 
   final List<Map<String, dynamic>> maps = await _database.query('right_graphs', where: 'id = ?', whereArgs: [id]);
-  final List<double> res = [
+  final List<double> result = [
     maps[0]['dB1'],
     maps[0]['dB2'],
     maps[0]['dB3'],
@@ -93,7 +95,7 @@ Future<List<double>> getRightGraphData([ int id ]) async {
     maps[0]['dB7']
   ];
 
-  return res;
+  return result;
 }
 // right end
 

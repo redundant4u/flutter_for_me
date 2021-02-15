@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+// import 'package:intl/intl.dart';
 
 import '../../db/User.dart';
 import '../../models/User.dart';
@@ -13,7 +14,10 @@ class PrivacyInformationState extends State<PrivacyInformation> {
   List<bool> _genderSelected = [ false, false ];
   User _user = User();
 
-  TextEditingController _controller;
+  TextEditingController _nameController;
+  List<TextEditingController> _birthController = [ TextEditingController(), TextEditingController(), TextEditingController() ];
+  FocusNode _fn1 = FocusNode(), _fn2 = FocusNode(), _fn3 = FocusNode();
+
 
   @override
   void initState() {
@@ -24,7 +28,12 @@ class PrivacyInformationState extends State<PrivacyInformation> {
   Future<void> _getUserData() async {
     _user = await getPrivacyInformationData();
 
-    _controller = TextEditingController(text: _user.name);
+    _nameController = TextEditingController(text: _user.name);
+
+    _birthController[0] = TextEditingController(text: _user.year);
+    _birthController[1] = TextEditingController(text: _user.month);
+    _birthController[2] = TextEditingController(text: _user.day);
+
     _user.male   == 1 ? _genderSelected[0] = true : _genderSelected[0] = false;
     _user.female == 1 ? _genderSelected[1] = true : _genderSelected[1] = false;
 
@@ -70,7 +79,7 @@ class PrivacyInformationState extends State<PrivacyInformation> {
                   Container(
                     padding: EdgeInsets.only(top: 5.0, left: 10.0),
                     child: TextField(
-                      controller: _controller,
+                      controller: _nameController,
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
                         focusedBorder: InputBorder.none,
@@ -87,7 +96,7 @@ class PrivacyInformationState extends State<PrivacyInformation> {
                 ],
               ),
             ),
-            
+
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
@@ -98,7 +107,7 @@ class PrivacyInformationState extends State<PrivacyInformation> {
               width: 350,
               height: 100,
               child: InkWell(
-                onTap: () { _selectDate(context); },
+                onTap: () { _changeFocus(context, _fn1); },
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -107,20 +116,95 @@ class PrivacyInformationState extends State<PrivacyInformation> {
                         '생년월일',
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 18.0
-                        ),
-                      ),
+                          fontSize: 15.0
+                        )
+                      )
                     ),
 
                     Container(
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(top: 18.0, left: 10.0),
-                      child: Text(
-                        _user.birth ?? '',
-                        style: TextStyle(
-                          fontSize: 18.0
-                        )
-                      ),
+                      padding: EdgeInsets.only(top: 5.0, left: 10.0),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            width: 40,
+                            child: TextField(
+                              controller: _birthController[0],
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(4),
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              focusNode: _fn1,
+                              cursorColor: Colors.black,
+                              decoration: InputDecoration(
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                              ),
+                              onChanged: (String year) {
+                                if( year.length == 4 ) _changeFocus(context, _fn2);
+                              },
+                            ),
+                          ),
+
+                          Text(' 년 '),
+
+                          Container(
+                            width: 25,
+                            child: TextField(
+                              controller: _birthController[1],
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(2),
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              focusNode: _fn2,
+                              cursorColor: Colors.black,
+                              decoration: InputDecoration(
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                              ),
+                              onChanged: (String month) {
+                                if( month.length == 2 ) _changeFocus(context, _fn3);
+                                if( month.length == 0 ) _changeFocus(context, _fn1);
+                              },
+                            ),
+                          ),
+
+                          Text(' 월 '),
+
+                          Container(
+                            width: 25,
+                            child: TextField(
+                              controller: _birthController[2],
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(2),
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              cursorColor: Colors.black,
+                              focusNode: _fn3,
+                              decoration: InputDecoration(
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                              ),
+                              onChanged: (String day) {
+                                if( day.length == 0 ) _changeFocus(context, _fn2);
+                              },
+                              onEditingComplete: () {
+                                _upsertUserData();
+                              },
+                            ),
+                          ),
+
+                          Text(' 일 '),
+                        ]
+                      )
                     )
                   ],
                 ),
@@ -183,35 +267,24 @@ class PrivacyInformationState extends State<PrivacyInformation> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    if( _user.birth == null ) _user.birth = '1997-09-11';
-
-    final DateTime picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.parse(_user.birth),
-      firstDate: DateTime(1920, 1),
-      lastDate: DateTime(2020, 1)
-    );
-
-    if( picked != null ) {
-      setState(() { _user.birth = DateFormat('yyyy-MM-dd').format(picked).toString(); });
-      _upsertUserData();
-    }
+  void _changeFocus(BuildContext context, FocusNode _fn) {
+    FocusScope.of(context).requestFocus(_fn);
+    setState(() {});
   }
 
   void _selectGender(int index) {
-     if( index == 0 ) {
-        _genderSelected[0] = true;
-        _genderSelected[1] = false;
-      }
+    if( index == 0 ) {
+       _genderSelected[0] = true;
+       _genderSelected[1] = false;
+     }
 
-     else {
-        _genderSelected[0] = false;
-        _genderSelected[1] = true;
-      }
+    else {
+       _genderSelected[0] = false;
+       _genderSelected[1] = true;
+     }
 
-      setState(() {});
+     setState(() {});
   }
 
-  Future<void> _upsertUserData() async { await upsertPrivacyInformation(_user); }
+  Future<void> _upsertUserData() async { await upsertPrivacyInformation(_user, _birthController); }
 }

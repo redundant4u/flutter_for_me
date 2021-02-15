@@ -36,7 +36,7 @@ List<double> getNoiseDectectorPageFontSize(_mediaHeight) {
 
 List<double> getSencondPageHeight(_mediaHeight) {
   if( _mediaHeight > 900 ) heightList = [ 550 ];
-  else                     heightList = [ 400 ];
+  else                     heightList = [ 350 ];
 
   return heightList;
 }

@@ -16,9 +16,10 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
 
   // leftEQ: futurebuilder의 future에 바로 getLeftEQData를 넣을 경우 값 변화가 안되므로 
   // 값을 한 번만 로딩하기 위해 future 변수를 만듬.
-  List<double> _sliderValue = [];
+  List<double> _sliderValue = [], _leftGraphData = [];
   List<IconData> _eqIcons = [];
   List<Color> _eqColors = [];
+  String warningMessage = "";
 
   Future _leftEQ;
 
@@ -30,9 +31,13 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
   }
 
   void _setEQState() async {
-    List<double> _leftGraphData = await getLeftGraphData();
-    List<double> _tmpLeftEQ = await getLeftEQData();
+    _leftGraphData = await getLeftGraphData();
+    if( _leftGraphData.length == 0 ) {
+      warningMessage = "검사를 먼저 진행해주세요";
+      return;
+    }
 
+    List<double> _tmpLeftEQ = await getLeftEQData();
     List tmp = await getEQIcons(_tmpLeftEQ, _leftGraphData);
     _eqIcons  = tmp[0];
     _eqColors = tmp[1];
@@ -46,16 +51,19 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
 
     final double _mediaHeight = MediaQuery.of(context).size.height;
     final List<double> _mediaHeightList = getSencondPageHeight(_mediaHeight);
+    final List<int> _widgetLoop = [ 0, 1, 2, 3, 4, 5, 6 ];
+    final List<String> _widgetText = [ "125", "250", "500", "1K", "2K", "4K", "8K" ];
 
     return FutureBuilder<List<double>>(
       future: _leftEQ,
       builder: (context, snapshot) {
-        if( snapshot.hasData ) {
+        if( snapshot.hasData && _leftGraphData.isNotEmpty ) {
           _sliderValue = snapshot.data;
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+              for( int i in _widgetLoop )
               Column(
                 children: <Widget>[
                   Container(
@@ -63,12 +71,12 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                     child: RotatedBox(
                       quarterTurns: -1,
                       child: Slider(
-                        value: _sliderValue[0],
+                        value: _sliderValue[i],
                         max: 500,
                         min: 0,
                         divisions: 500,
-                        label: _sliderValue[0].toString(),
-                        onChanged: (double value) { _setSliderValue(value, 0); },
+                        label: _sliderValue[i].toString(),
+                        onChanged: (double value) { _setSliderValue(value, i); },
                         onChangeEnd: (double value) async {
                           await upsertLeftEQData(_sliderValue);
                           _setEQState();
@@ -77,228 +85,23 @@ class SecondLeftPageState extends State<SecondLeftPage> with AutomaticKeepAliveC
                     ),
                   ),
 
-                  Text('125'),
+                  Text(_widgetText[i]),
 
                   Container(
                     padding: EdgeInsets.only(top: 15.0),
                     child: Icon(
-                      _eqIcons[0],
-                      color: _eqColors[0],
+                      _eqIcons[i],
+                      color: _eqColors[i],
                       size: 30.0
                     )
                   )
                 ],
               ),
-
-              Column(
-                children: <Widget>[
-                  Container(
-                    height: _mediaHeightList[0],
-                    child: RotatedBox(
-                      quarterTurns: -1,
-                      child: Slider(
-                        value: _sliderValue[1],
-                        max: 500,
-                        min: 0,
-                        divisions: 500,
-                        label: _sliderValue[1].toString(),
-                        onChanged: (double value) { _setSliderValue(value, 1); },
-                        onChangeEnd: (double value) async {
-                          await upsertLeftEQData(_sliderValue);
-                          _setEQState();
-                        },
-                      ),
-                    ),
-                  ),
-
-                  Text('250'),
-
-                  Container(
-                    padding: EdgeInsets.only(top: 15.0),
-                    child: Icon(
-                      _eqIcons[1],
-                      color: _eqColors[1],
-                      size: 30.0
-                    ),
-                  )
-                ],
-              ),
-
-              Column(
-                children: <Widget>[
-                  Container(
-                    height: _mediaHeightList[0],
-                    child: RotatedBox(
-                      quarterTurns: -1,
-                      child: Slider(
-                        value: _sliderValue[2],
-                        max: 500,
-                        min: 0,
-                        divisions: 500,
-                        label: _sliderValue[2].toString(),
-                        onChanged: (double value) { _setSliderValue(value, 2); },
-                        onChangeEnd: (double value) async {
-                          await upsertLeftEQData(_sliderValue);
-                          _setEQState();
-                        },
-                      ),
-                    ),
-                  ),
-
-                  Text('500'),
-
-                  Container(
-                    padding: EdgeInsets.only(top: 15.0),
-                    child: Icon(
-                      _eqIcons[2],
-                      color: _eqColors[2],
-                      size: 30.0
-                    )
-                  ),
-                ],
-              ),
-
-              Column(
-                children: <Widget>[
-                  Container(
-                    height: _mediaHeightList[0],
-                    child: RotatedBox(
-                      quarterTurns: -1,
-                      child: Slider(
-                        value: _sliderValue[3],
-                        max: 500,
-                        min: 0,
-                        divisions: 500,
-                        label: _sliderValue[3].toString(),
-                        onChanged: (double value) { _setSliderValue(value, 3); },
-                        onChangeEnd: (double value) async {
-                          await upsertLeftEQData(_sliderValue);
-                          _setEQState();
-                        },
-                      ),
-                    ),
-                  ),
-
-                  Text('1K'),
-
-                  Container(
-                    padding: EdgeInsets.only(top: 15.0),
-                    child: Icon(
-                      _eqIcons[3],
-                      color: _eqColors[3],
-                      size: 30.0
-                    )
-                  ),
-                ],
-              ),
-
-              Column(
-                children: <Widget>[
-                  Container(
-                    height: _mediaHeightList[0],
-                    child: RotatedBox(
-                      quarterTurns: -1,
-                      child: Slider(
-                        value: _sliderValue[4],
-                        max: 500,
-                        min: 0,
-                        divisions: 500,
-                        label: _sliderValue[4].toString(),
-                        onChanged: (double value) { _setSliderValue(value, 4); },
-                        onChangeEnd: (double value) async {
-                          await upsertLeftEQData(_sliderValue);
-                          _setEQState();
-                        },
-                      ),
-                    ),
-                  ),
-
-                  Text('2K'),
-
-                  Container(
-                    padding: EdgeInsets.only(top: 15.0),
-                    child: Icon(
-                      _eqIcons[4],
-                      color: _eqColors[4],
-                      size: 30.0
-                    )
-                  ),
-                ],
-              ),
-
-              Column(
-                children: <Widget>[
-                  Container(
-                    height: _mediaHeightList[0],
-                    child: RotatedBox(
-                      quarterTurns: -1,
-                      child: Slider(
-                        value: _sliderValue[5],
-                        max: 500,
-                        min: 0,
-                        divisions: 500,
-                        label: _sliderValue[5].toString(),
-                        onChanged: (double value) { _setSliderValue(value, 5); },
-                        onChangeEnd: (double value) async {
-                          await upsertLeftEQData(_sliderValue);
-                          _setEQState();
-                        },
-                      ),
-                    ),
-                  ),
-
-                  Text('4K'),
-
-                  Container(
-                    padding: EdgeInsets.only(top: 15.0),
-                    child: Icon(
-                      _eqIcons[5],
-                      color: _eqColors[5],
-                      size: 30.0
-                    )
-                  ),
-                ],
-              ),
-
-              Column(
-                children: <Widget>[
-                  Container(
-                    height: _mediaHeightList[0],
-                    child: RotatedBox(
-                      quarterTurns: -1,
-                      child: Slider(
-                        value: _sliderValue[6],
-                        max: 500,
-                        min: 0,
-                        divisions: 500,
-                        label: _sliderValue[6].toString(),
-                        onChanged:   (double value) { _setSliderValue(value, 6); },
-                        onChangeEnd: (double value) async {
-                          await upsertLeftEQData(_sliderValue);
-                          _setEQState();
-                        },
-                      ),
-                    ),
-                  ),
-
-                  Text('8K'),
-
-                  Container(
-                    padding: EdgeInsets.only(top: 15.0),
-                    child: Icon(
-                      _eqIcons[6],
-                      color: _eqColors[6],
-                      size: 30.0
-                    )
-                  ),
-                ],
-              ),
-
             ],
           );
         }
 
-        else return Text('');
+        else return Text(warningMessage);
       }
     );
   }
