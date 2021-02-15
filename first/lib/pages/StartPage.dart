@@ -11,8 +11,6 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      width:MediaQuery.of(context).size.height / 4.5,
-                      height: MediaQuery.of(context).size.height / 6,
       child: Column(
         children: <Widget>[
           Row(

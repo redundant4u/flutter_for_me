@@ -30,7 +30,7 @@
 - [noise_meter](https://pub.dev/packages/noise_meter)를 이용하여 소음 측정을 FourthPage에 임시적으로 구현.
 
 ## 210119
-- FirstPage, NoiseDectorPage, FindBluetoothPage를 통합. 검사 조건을 만족해야 FirstPage의 검사를 할 수 있도록 설정.
+- FirstPage, NoiseDetectorPage, FindBluetoothPage를 통합. 검사 조건을 만족해야 FirstPage의 검사를 할 수 있도록 설정.
 - FirstPage 왼쪽 검사로 넘어갈 때의 setState() 문제 해결.
 - 모바일의 크기에 따라 폰트 크기 및 길이가 변할 수 있도록 MediaQuery.dart 생성하여 관리.
 
@@ -51,3 +51,9 @@
 
 ## 210205
 - 개인정보를 보고 수정하는 페이지 구현. DB 파일 내용을 목적에 따라 모듈화 진행.
+
+## 210215
+- StartPage 추가(추후 삭제 고려).
+- SecondPage의 EQ widget 부분을 for문을 활용하여 코드 수를 대폭 줄임.
+- SecondPage의 EQ 페이지를 graphs table 값과 연동하여 EQ 값이 적절한 지 시각적으로 표현.
+- users table의 bitrh column을 year, month, day로 쪼갬.
