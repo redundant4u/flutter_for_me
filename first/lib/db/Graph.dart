@@ -58,9 +58,10 @@ Future<List<double>> getLeftGraphData([ int id ]) async {
   return result;
 }
 
-Future<void> deleteLeftGraphData(int id) async {
+Future<void> deleteGraphData(int id) async {
   final Database _database = await DB.instance.database;
   await _database.delete('left_graphs', where: 'id = ?', whereArgs: [id]);
+  await _database.delete('right_graphs', where: 'id = ?', whereArgs: [id]);
 }
 // left end
 

@@ -199,7 +199,7 @@ class FirstPageState extends State<FirstPage> {
   void _checkEarDirection() {
     // 오른쪽 -> 왼쪽 검사
     if( _freqLevel == 7 ) {
-      _currentFreq = 250;
+      _currentFreq = 125;
       _freqLevel = 1;
       _rightFlag = false;
       _earDirection = "왼쪽 귀";

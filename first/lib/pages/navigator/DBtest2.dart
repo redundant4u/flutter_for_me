@@ -41,7 +41,7 @@ class DBtest2State extends State<DBtest2> {
                             IconButton(
                               alignment: Alignment.center,
                               icon: Icon(Icons.delete),
-                              onPressed: () async { _deleteUser(index); }
+                              onPressed: () async { _deleteGraph(index); }
                             ),
                         );
                       },
@@ -59,6 +59,6 @@ class DBtest2State extends State<DBtest2> {
     );
   }
 
-  _deleteUser(int index) { deleteLeftGraphData(index); setState(() {}); }
+  _deleteGraph(int index) { deleteGraphData(index); setState(() {}); }
   // _insertLeftName(String name) { DB.instance.insertLeftName(name); setState(() {}); }
 }

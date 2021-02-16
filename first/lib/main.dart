@@ -45,7 +45,7 @@ class _FirstAppState extends State<FirstApp> {
           type: BottomNavigationBarType.fixed,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home, color: Colors.grey, size: 40),
+              icon: Icon(Icons.home, color: Colors.grey, size: 43),
               label: ''
             ),
             BottomNavigationBarItem(
