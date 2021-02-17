@@ -57,3 +57,7 @@
 - SecondPage의 EQ widget 부분을 for문을 활용하여 코드 수를 대폭 줄임.
 - SecondPage의 EQ 페이지를 graphs table 값과 연동하여 EQ 값이 적절한 지 시각적으로 표현.
 - users table의 bitrh column을 year, month, day로 쪼갬.
+
+## 210217
+- 앱을 열 때마다 사용자 정보를 확인하여 없다면 사용자 정보 입력을 하도록 설정.
+- StartPage 이름을 FirstPage라 바꾸고 나머지 페이지 이름들도 그에 맞게 수정.
