@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 class DB {
   DB._();
 
-  static const databaseName = "12.db";
+  static const databaseName = "13.db";
   static final DB instance = DB._();
   static Database _database;
 

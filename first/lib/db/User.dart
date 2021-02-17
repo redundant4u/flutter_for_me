@@ -47,7 +47,7 @@ Future<User> getPrivacyInformationData() async {
   }
 
   return _user;
-  }
+}
 
 // for test!!
 Future<List<User>> getUserList() async {

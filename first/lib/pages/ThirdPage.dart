@@ -1,36 +1,53 @@
 import 'package:flutter/material.dart';
 
-import '../db/Graph.dart';
-import '../models/Left.dart';
-import './ThirdGraphPage.dart';
+import './left/ThirdLeftPage.dart';
+import './right/ThirdRightPage.dart';
 
-class ThirdPage extends StatelessWidget {
+class ThirdPage extends StatefulWidget {
+  @override
+  ThirdPageState createState() => new ThirdPageState();
+}
+
+class ThirdPageState extends State<ThirdPage> with SingleTickerProviderStateMixin {
+  TabController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = new TabController(length: 2, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Left>>(
-      future: getGraphDate(),
-      builder: (context, snapshot) {
-        if( snapshot.hasData ) {
-          return ListView.separated(
-            padding: EdgeInsets.all(10.0),
-            separatorBuilder: (context, index) => Divider(color: Color(0xFFF0AD74)),
-            itemCount: snapshot.data.length,
-            itemBuilder: (BuildContext contxt, int index) {
-              return ListTile(
-                title: Text(snapshot.data[index].date),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    ThirdGraphPage(snapshot.data[index].id)
-                  ));
-                },
-              );
-            },
-          );
-        }
+    return Flex(
+      direction: Axis.vertical,
+      children: <Widget>[
+        Container(
+          child: TabBar(
+            indicatorColor: Colors.black,
+            labelStyle: TextStyle(fontSize: 20),
+            labelColor: Colors.black,
+            unselectedLabelStyle: TextStyle(fontSize: 15),
+            controller: _controller,
+            tabs: <Tab>[
+              Tab(text: 'L'),
+              Tab(text: 'R'),
+            ]),
+        ),
 
-        else if( snapshot.hasError ) return Text('Oops!');
-        else { print('no data'); return Center(child: CircularProgressIndicator() ); }
-      }
+        Expanded(
+          child: TabBarView(
+            controller: _controller,
+            children: <Widget>[
+              _leftPage(),
+              _rightPage(),
+            ],
+          ),
+        )
+      ],
     );
   }
+
+  Widget _leftPage() { return ThirdLeftPage(); }
+  Widget _rightPage() { return ThirdRightPage(); }
 }

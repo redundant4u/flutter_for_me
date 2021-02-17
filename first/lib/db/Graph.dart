@@ -82,7 +82,8 @@ Future<List<double>> getRightGraphData([ int id ]) async {
   if( id == null ) {
     print('id is null!');
     final List<Map<String, dynamic>> latestId = await _database.rawQuery("SELECT id FROM right_graphs ORDER BY id DESC LIMIT 0, 1");
-    id = latestId[0]['id'];
+    try      { id = latestId[0]['id']; }
+    catch(e) { return []; }
   }
 
   final List<Map<String, dynamic>> maps = await _database.query('right_graphs', where: 'id = ?', whereArgs: [id]);

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import './left/ThirdLeftPage.dart';
-import './right/ThirdRightPage.dart';
+import './left/FourthLeftPage.dart';
+import './right/FourthRightPage.dart';
 
-class ThirdGraphPage extends StatefulWidget {
+class FourthGraphPage extends StatefulWidget {
   final int id;
-  ThirdGraphPage(this.id);
+  FourthGraphPage(this.id);
 
   @override
-  ThirdGraphPageState createState() => ThirdGraphPageState();
+  FourthGraphPageState createState() => FourthGraphPageState();
 }
 
-class ThirdGraphPageState extends State<ThirdGraphPage> with SingleTickerProviderStateMixin {
+class FourthGraphPageState extends State<FourthGraphPage> with SingleTickerProviderStateMixin {
   TabController _controller;
   
   void initState() {
@@ -51,6 +51,6 @@ class ThirdGraphPageState extends State<ThirdGraphPage> with SingleTickerProvide
   }
 
 
-  Widget _leftPage()  { return ThirdLeftPage(widget.id);  }
-  Widget _rightPage() { return ThirdRightPage(widget.id); }
+  Widget _leftPage()  { return FourthLeftPage(widget.id);  }
+  Widget _rightPage() { return FourthRightPage(widget.id); }
 }

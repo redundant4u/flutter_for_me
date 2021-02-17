@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:intl/intl.dart';
 
 import '../../db/User.dart';
 import '../../models/User.dart';
+import '../ControllerPage.dart';
 
 class PrivacyInformation extends StatefulWidget {
   @override
-  PrivacyInformationState createState() => new PrivacyInformationState();
+  _PrivacyInformationState createState() => new _PrivacyInformationState();
 }
 
-class PrivacyInformationState extends State<PrivacyInformation> {
+class _PrivacyInformationState extends State<PrivacyInformation> {
+  TextEditingController _nameController;
   List<bool> _genderSelected = [ false, false ];
   User _user = User();
-
-  TextEditingController _nameController;
-  List<TextEditingController> _birthController = [ TextEditingController(), TextEditingController(), TextEditingController() ];
-  FocusNode _fn1 = FocusNode(), _fn2 = FocusNode(), _fn3 = FocusNode();
+  bool _isFirst = false;
+  
+  final List<TextEditingController> _birthController = [ TextEditingController(), TextEditingController(), TextEditingController() ];
+  final FocusNode _fn1 = FocusNode(), _fn2 = FocusNode(), _fn3 = FocusNode();
 
 
   @override
@@ -37,7 +38,14 @@ class PrivacyInformationState extends State<PrivacyInformation> {
     _user.male   == 1 ? _genderSelected[0] = true : _genderSelected[0] = false;
     _user.female == 1 ? _genderSelected[1] = true : _genderSelected[1] = false;
 
+    _checkIdnull(_user);
+
     setState(() {});
+  }
+
+  void _checkIdnull(User _user) {
+    if( _user.id == null )
+      _isFirst = true;
   }
 
   @override
@@ -87,7 +95,7 @@ class PrivacyInformationState extends State<PrivacyInformation> {
                         errorBorder: InputBorder.none,
                         disabledBorder: InputBorder.none,
                       ),
-                      onSubmitted: (name) async {
+                      onChanged: (name) {
                         _user.name = name;
                         _upsertUserData();
                       },
@@ -251,6 +259,7 @@ class PrivacyInformationState extends State<PrivacyInformation> {
 
                             if( _genderSelected[0] ) { _user.male = 1; _user.female = 0; }
                             else                     { _user.male = 0; _user.female = 1; }
+
                             _upsertUserData();
                           },
                           isSelected: _genderSelected,
@@ -261,9 +270,26 @@ class PrivacyInformationState extends State<PrivacyInformation> {
                 ],
               ),
             ),
+
+            if(_isFirst)
+            Container(
+              alignment: Alignment.bottomRight,
+              padding: EdgeInsets.all(10.0),
+              width: 350,
+              height: 100,
+              child: FloatingActionButton.extended(
+                icon: Icon(Icons.arrow_forward),
+                label: Text('검사하러 가기'),
+                onPressed: () {
+                  _upsertUserData();
+                  Navigator.pop(context, true);
+                  Navigator.push( context, MaterialPageRoute(builder: (context) => ControllerPage()) );
+                },
+              ),
+            )
           ]
         )
-      )
+      ),
     );
   }
 

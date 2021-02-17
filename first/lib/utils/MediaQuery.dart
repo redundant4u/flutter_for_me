@@ -1,7 +1,7 @@
 List<double> heightList = [];
 List<double> fontSizeList = [];
 
-List<double> getFirstPageMediaHeight(_mediaHeight) {
+List<double> getSecondPageMediaHeight(_mediaHeight) {
   if     ( _mediaHeight > 900 ) heightList = [ 563.0 ];
   else if( _mediaHeight > 800 ) heightList = [ 495.0 ];
   else if( _mediaHeight > 700 ) heightList = [ 383.0 ];
@@ -10,7 +10,7 @@ List<double> getFirstPageMediaHeight(_mediaHeight) {
   return heightList;
 }
 
-List<double> getFirstPageFontSize(_mediaHeight) {
+List<double> getSecondPageFontSize(_mediaHeight) {
   if( _mediaHeight > 700 ) fontSizeList = [ 20, 30 ];
   else fontSizeList = [ 15, 25 ];
 
@@ -34,7 +34,7 @@ List<double> getNoiseDectectorPageFontSize(_mediaHeight) {
   return fontSizeList;
 }
 
-List<double> getSencondPageHeight(_mediaHeight) {
+List<double> getThirdPageHeight(_mediaHeight) {
   if( _mediaHeight > 900 ) heightList = [ 550 ];
   else                     heightList = [ 350 ];
 
