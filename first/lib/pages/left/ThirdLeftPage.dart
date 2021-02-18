@@ -17,8 +17,8 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
   // leftEQ: futurebuilder의 future에 바로 getLeftEQData를 넣을 경우 값 변화가 안되므로 
   // 값을 한 번만 로딩하기 위해 future 변수를 만듬.
   List<double> _sliderValue = [], _leftGraphData = [];
-  List<IconData> _eqIcons = [];
-  List<Color> _eqColors = [];
+  List<IconData> _eqIcons = List.filled(7, null);
+  List<Color> _eqColors = List.filled(7, null);
   String warningMessage = "";
 
   Future _leftEQ;
@@ -42,7 +42,7 @@ class ThirdLeftPageState extends State<ThirdLeftPage> with AutomaticKeepAliveCli
     _eqIcons  = tmp[0];
     _eqColors = tmp[1];
 
-    setState(() {});
+    if( this.mounted ) setState(() {});
   }
 
   @override

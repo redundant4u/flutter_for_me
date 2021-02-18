@@ -99,6 +99,9 @@ class _PrivacyInformationState extends State<PrivacyInformation> {
                         _user.name = name;
                         _upsertUserData();
                       },
+                      onEditingComplete: () {
+                        FocusScope.of(context).unfocus();
+                      },
                     )
                   )
                 ],
@@ -205,6 +208,7 @@ class _PrivacyInformationState extends State<PrivacyInformation> {
                                 if( day.length == 0 ) _changeFocus(context, _fn2);
                               },
                               onEditingComplete: () {
+                                FocusScope.of(context).unfocus();
                                 _upsertUserData();
                               },
                             ),

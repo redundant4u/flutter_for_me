@@ -17,8 +17,8 @@ class ThirdRightPageState extends State<ThirdRightPage> with AutomaticKeepAliveC
   // rightEQ: futurebuilder의 future에 바로 getrightEQData를 넣을 경우 값 변화가 안되므로 
   // 값을 한 번만 로딩하기 위해 future 변수를 만듬.
   List<double> _sliderValue = [], _rightGraphData = [];
-  List<IconData> _eqIcons = [];
-  List<Color> _eqColors = [];
+  List<IconData> _eqIcons = List.filled(7, null);
+  List<Color> _eqColors = List.filled(7, null);
   String warningMessage = "";
 
   Future _rightEQ;
