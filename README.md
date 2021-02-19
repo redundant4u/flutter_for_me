@@ -1,5 +1,7 @@
-# flutter_for_me
-flutter 참고 연습코드 모음
+# mobile_LAB
+모바일 어플 프로젝트 모음
 
-## first
-- 기본적으로 TabBarView로 L, R 페이지로 나누어져 있다. BottomNavigationBar로 원하는 페이지로 이동 가능 또한 L, R 별로 페이지를 만들어서 독립적으로 사용 가능하다.
+## earcheck_flutter
+- 청력 검사를 도와주는 예제 어플.
+
+![earcheck_flutter_diagram](https://user-images.githubusercontent.com/38307839/108460548-3b586900-72bc-11eb-8543-e57df7b88480.png)
