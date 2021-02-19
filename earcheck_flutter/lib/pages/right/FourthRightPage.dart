@@ -35,7 +35,7 @@ class FourthRightPageState extends State<FourthRightPage> with AutomaticKeepAliv
           return LineChart(
             seriesList,
             animate: false,
-            defaultRenderer: LineRendererConfig(includePoints: false),
+            defaultRenderer: LineRendererConfig(includePoints: true),
             flipVerticalAxis: true,
             layoutConfig: LayoutConfig(
               topMarginSpec: MarginSpec.fixedPixel(30),
@@ -60,13 +60,13 @@ class FourthRightPageState extends State<FourthRightPage> with AutomaticKeepAliv
               ),
               RangeAnnotation([
                 RangeAnnotationSegment(
-                  40.0, 20.0, RangeAnnotationAxisType.measure, color: ColorUtil.fromDartColor(Colors.green.shade400)
+                  40.0, 20.0, RangeAnnotationAxisType.measure, color: Color.fromHex(code: '#72CC82')
                 ),
                 RangeAnnotationSegment(
-                  80.0, 40.0, RangeAnnotationAxisType.measure, color: ColorUtil.fromDartColor(Colors.yellow.shade400)
+                  80.0, 40.0, RangeAnnotationAxisType.measure, color: Color.fromHex(code: '#FFD700')
                 ),
                 RangeAnnotationSegment(
-                  120.0, 80.0, RangeAnnotationAxisType.measure, color: ColorUtil.fromDartColor(Colors.red.shade400)
+                  120.0, 80.0, RangeAnnotationAxisType.measure, color: ColorUtil.fromDartColor(Colors.red.shade300)
                 ),
               ]),
               ChartTitle(
