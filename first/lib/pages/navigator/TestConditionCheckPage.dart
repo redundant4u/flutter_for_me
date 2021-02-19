@@ -49,7 +49,7 @@ class TestConditionCheckPageState extends State<TestConditionCheckPage> {
                       height: MediaQuery.of(context).size.height / 3,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/images/inear.png"),
+                          image: AssetImage("assets/images/inear.gif"),
                           fit: BoxFit.fill
                         )
                       ),
